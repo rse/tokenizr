@@ -1,14 +1,14 @@
 {
-    "name":        "oset",
-    "version":     "1.0.3",
-    "description": "Ordered Set Data Structure",
-    "main":        "lib/oset.js",
-    "homepage":    "https://github.com/rse/oset",
+    "name":        "tokenizr",
+    "version":     "0.9.0",
+    "description": "String Tokenization Library for JavaScript",
+    "main":        "lib/tokenizr.js",
+    "homepage":    "https://github.com/rse/tokenizr",
     "license":     "MIT",
     "authors": [
         "Ralf S. Engelschall <rse@engelschall.com>"
     ],
-    "keywords": [ "ordered", "set" ],
+    "keywords": [ "string", "tokenization", "scanner", "lexer" ],
     "dependencies": {
     },
     "ignore": [
