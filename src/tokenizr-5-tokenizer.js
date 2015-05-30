@@ -22,9 +22,9 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import excerpt           from "./tokenizr-1-excerpt"
-import TokenizationError from "./tokenizr-3-error"
-import ActionContext     from "./tokenizr-4-context"
+import excerpt       from "./tokenizr-1-excerpt"
+import ParsingError  from "./tokenizr-3-error"
+import ActionContext from "./tokenizr-4-context"
 
 /*  external API class  */
 export default class Tokenizr {
@@ -204,7 +204,12 @@ export default class Tokenizr {
         }
 
         /*  no pattern matched at all  */
-        throw new TokenizationError("token not recognized", this)
+        throw this.error("token not recognized")
+    }
+
+    /*  create an error message for the current position  */
+    error (message) {
+        return new ParsingError(message, this._pos, this._line, this._column, this._input)
     }
 
     /*  determine and return next token  */

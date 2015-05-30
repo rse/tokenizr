@@ -25,25 +25,28 @@
 import excerpt from "./tokenizr-1-excerpt"
 
 /*  internal helper class for tokenization error reporting  */
-export default class TokenizationError extends Error {
+export default class ParsingError extends Error {
     /*  construct and initialize object  */
-    constructor (message = "Tokenization Error", tokenizr = null) {
+    constructor (message, pos, line, column, input) {
         super(message)
-        this.name     = "TokenizationError"
+        this.name     = "ParsingError"
         this.message  = message
-        this.tokenizr = tokenizr
+        this.pos      = pos
+        this.line     = line
+        this.column   = column
+        this.input    = input
     }
 
     /*  render a useful string representation  */
-    toString (noFinalNewLine) {
-        let l = excerpt(this.tokenizr._input, this.tokenizr._pos)
-        let prefix1 = `line ${this.tokenizr._line} (column ${this.tokenizr._column}): `
+    toString () {
+        let l = excerpt(this.input, this.pos)
+        let prefix1 = `line ${this.line} (column ${this.column}): `
         let prefix2 = ""
         for (let i = 0; i < prefix1.length + l.prologText.length; i++)
             prefix2 += " "
-        let msg = "Tokenization Error: " + this.message + "\n" +
+        let msg = "Parsing Error: " + this.message + "\n" +
             prefix1 + l.prologText + l.tokenText + l.epilogText + "\n" +
-            prefix2 + "^" + (noFinalNewLine ? "" : "\n")
+            prefix2 + "^"
         return msg
     }
 }
