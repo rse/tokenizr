@@ -54,6 +54,7 @@ export default class Tokenizr {
     /*  configure debug operation  */
     debug (debug) {
         this._debug = debug
+        return this
     }
 
     /*  output a debug message  */
@@ -221,62 +222,6 @@ export default class Tokenizr {
         return new ParsingError(message, this._pos, this._line, this._column, this._input)
     }
 
-    /*  open tokenization transaction  */
-    begin () {
-        this._log(`BEGIN: level ${this._transaction.length}`)
-        this._transaction.unshift([])
-        return this
-    }
-
-    /*  determine depth of still open tokenization transaction  */
-    depth () {
-        if (this._transaction.length === 0)
-            throw new Error("cannot determine depth -- no active transaction")
-        return this._transaction[0].length
-    }
-
-    /*  close (successfully) tokenization transaction  */
-    commit () {
-        if (this._transaction.length === 0)
-            throw new Error("cannot commit transaction -- no active transaction")
-        this._transaction.shift()
-        this._log(`COMMIT: level ${this._transaction.length}`)
-        return this
-    }
-
-    /*  close (unsuccessfully) tokenization transaction  */
-    rollback () {
-        if (this._transaction.length === 0)
-            throw new Error("cannot rollback transaction -- no active transaction")
-        this._pending = this._transaction[0].concat(this._pending)
-        this._transaction.shift()
-        this._log(`ROLLBACK: level ${this._transaction.length}`)
-        return this
-    }
-
-    /*  execute multiple alternative callbacks  */
-    alternatives (...alternatives) {
-        let result = null
-        let depths = []
-        for (let i = 0; i < alternatives.length; i++) {
-            try {
-                this.begin()
-                result = alternatives[i]()
-                this.commit()
-                break
-            } catch (ex) {
-                depths.push({ ex: ex, depth: this.depth() })
-                this.rollback()
-                continue
-            }
-        }
-        if (result === null && depths.length > 0) {
-            depths = depths.sort((a, b) => a.depth - b.depth)
-            throw depths[0].ex
-        }
-        return result
-    }
-
     /*  determine and return next token  */
     token () {
         /*  if no more tokens are pending, try to determine a new one  */
@@ -353,5 +298,60 @@ export default class Tokenizr {
         return token
     }
 
+    /*  open tokenization transaction  */
+    begin () {
+        this._log(`BEGIN: level ${this._transaction.length}`)
+        this._transaction.unshift([])
+        return this
+    }
+
+    /*  determine depth of still open tokenization transaction  */
+    depth () {
+        if (this._transaction.length === 0)
+            throw new Error("cannot determine depth -- no active transaction")
+        return this._transaction[0].length
+    }
+
+    /*  close (successfully) tokenization transaction  */
+    commit () {
+        if (this._transaction.length === 0)
+            throw new Error("cannot commit transaction -- no active transaction")
+        this._transaction.shift()
+        this._log(`COMMIT: level ${this._transaction.length}`)
+        return this
+    }
+
+    /*  close (unsuccessfully) tokenization transaction  */
+    rollback () {
+        if (this._transaction.length === 0)
+            throw new Error("cannot rollback transaction -- no active transaction")
+        this._pending = this._transaction[0].concat(this._pending)
+        this._transaction.shift()
+        this._log(`ROLLBACK: level ${this._transaction.length}`)
+        return this
+    }
+
+    /*  execute multiple alternative callbacks  */
+    alternatives (...alternatives) {
+        let result = null
+        let depths = []
+        for (let i = 0; i < alternatives.length; i++) {
+            try {
+                this.begin()
+                result = alternatives[i]()
+                this.commit()
+                break
+            } catch (ex) {
+                depths.push({ ex: ex, depth: this.depth() })
+                this.rollback()
+                continue
+            }
+        }
+        if (result === null && depths.length > 0) {
+            depths = depths.sort((a, b) => a.depth - b.depth)
+            throw depths[0].ex
+        }
+        return result
+    }
 }
 
