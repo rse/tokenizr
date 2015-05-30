@@ -40,5 +40,12 @@ export default class Token {
             `line: ${this.line}, ` +
             `column: ${this.column}>`
     }
+    isA (type, value) {
+        if (type !== this.type)
+            return false
+        if (arguments.length === 2 && value !== this.value)
+            return false
+        return true
+    }
 }
 
