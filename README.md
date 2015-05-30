@@ -13,7 +13,7 @@ String Tokenization Library for JavaScript
 About
 -----
 
-Tokenizr is a small JavaScript library, providing flexible string
+Tokenizr is a small but flexible JavaScript library, providing string
 tokenization functionality. It is intended to be be used as the
 underlying "lexical scanner" in a Recursive Descent based "syntax
 parser". Its distinct features are:
