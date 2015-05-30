@@ -87,7 +87,7 @@ export default class ActionContext {
     /*  accept a new token  */
     accept (type, value = this._match[0]) {
         this._tokenizr._log(`    ACCEPT: type: ${type}, value: ${JSON.stringify(value)} (${typeof value}), text: "${this._match[0]}"`)
-        this._tokenizr._tokens.push(new Token(
+        this._tokenizr._pending.push(new Token(
             type, value, this._match[0],
             this._tokenizr._pos, this._tokenizr._line, this._tokenizr._column
         ))

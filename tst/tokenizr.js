@@ -63,13 +63,13 @@ describe("Tokenizr Library", function () {
         expect(tokens).to.be.a("array")
         expect(tokens).to.have.length(4)
         expect(tokens[0]).to.be.a("object").and.to.be.deep
-            .equal({ type: "symbol", value: "foo", text: "foo", pos: 0, line: 0, column: 0 })
+            .equal({ type: "symbol", value: "foo", text: "foo", pos: 0, line: 1, column: 1 })
         expect(tokens[1]).to.be.a("object").and.to.be.deep
-            .equal({ type: "number", value: 42, text: "42", pos: 3, line: 0, column: 3 })
+            .equal({ type: "number", value: 42, text: "42", pos: 3, line: 1, column: 4 })
         expect(tokens[2]).to.be.a("object").and.to.be.deep
-            .equal({ type: "string", value: "bar baz", text: "\"bar baz\"", pos: 8, line: 1, column: 1 })
+            .equal({ type: "string", value: "bar baz", text: "\"bar baz\"", pos: 8, line: 2, column: 2 })
         expect(tokens[3]).to.be.a("object").and.to.be.deep
-            .equal({ type: "symbol", value: "quux", text: "quux", pos: 20, line: 2, column: 1 })
+            .equal({ type: "symbol", value: "quux", text: "quux", pos: 20, line: 3, column: 2 })
     })
 })
 

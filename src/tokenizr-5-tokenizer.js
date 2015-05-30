@@ -23,6 +23,7 @@
 */
 
 import excerpt       from "./tokenizr-1-excerpt"
+import Token         from "./tokenizr-2-token"
 import ParsingError  from "./tokenizr-3-error"
 import ActionContext from "./tokenizr-4-context"
 
@@ -37,14 +38,17 @@ export default class Tokenizr {
 
     /*  reset the internal state  */
     reset () {
-        this._input   = ""
-        this._len     = 0
-        this._pos     = 0
-        this._line    = 0
-        this._column  = 0
-        this._state   = [ "default" ]
-        this._tokens  = []
-        this._ctx     = new ActionContext(this)
+        this._input       = ""
+        this._len         = 0
+        this._eof         = false
+        this._pos         = 0
+        this._line        = 1
+        this._column      = 1
+        this._state       = [ "default" ]
+        this._transaction = false
+        this._consumed    = []
+        this._pending     = []
+        this._ctx         = new ActionContext(this)
         return this
     }
 
@@ -93,10 +97,8 @@ export default class Tokenizr {
 
         /*  post-process pattern  */
         var flags = "g"
-        if (pattern.multiline)
-            flags += "m"
-        if (pattern.ignoreCase)
-            flags += "i"
+        if (pattern.multiline)  flags += "m"
+        if (pattern.ignoreCase) flags += "i"
         pattern = new RegExp(pattern.source, flags)
 
         /*  store rule  */
@@ -114,24 +116,31 @@ export default class Tokenizr {
         for (let i = from; i < until; i++) {
             let c = s.charAt(i)
             if (c === "\r")
-                this._column = 0
+                this._column = 1
             else if (c === "\n") {
                 this._line++
-                this._column = 0
+                this._column = 1
             }
             else if (c === "\t")
                 this._column += 8 - (this._column % 8)
             else
                 this._column++
         }
-        this._log(`    PROGRESS: characters: ${until - from}, from: <line ${line}, column ${column}>, to: <line ${this._line}, column ${this._column}>`)
+        this._log(`    PROGRESS: characters: ${until - from}, ` +
+            `from: <line ${line}, column ${column}>, ` +
+            `to: <line ${this._line}, column ${this._column}>`)
     }
 
     /*  determine and return the next token  */
     _tokenize () {
         /*  tokenize only as long as there is input left  */
-        if (this._pos >= this._len)
+        if (this._pos >= this._len) {
+            if (!this._eof) {
+                this._eof = true
+                this._pending.push(new Token("EOF", "", "", this._pos, this._line, this._column))
+            }
             return
+        }
 
         /*  loop...  */
         let continued = true
@@ -149,7 +158,8 @@ export default class Tokenizr {
             /*  iterate over all rules...  */
             for (let i = 0; i < this._rules.length; i++) {
                 if (this._debug)
-                    this._log(`  RULE: state(s): ${this._rules[i].state.join(",")}, pattern: ${this._rules[i].pattern.source}`)
+                    this._log(`  RULE: state(s): ${this._rules[i].state.join(",")}, ` +
+                        `pattern: ${this._rules[i].pattern.source}`)
 
                 /*  one of rule's states has to match  */
                 if (!(   (   this._rules[i].state.length === 1
@@ -190,7 +200,7 @@ export default class Tokenizr {
                         continued = true
                         break
                     }
-                    else if (this._tokens.length > 0) {
+                    else if (this._pending.length > 0) {
                         /*  accept token(s)  */
                         this._progress(this._pos, this._rules[i].pattern.lastIndex)
                         this._pos = this._rules[i].pattern.lastIndex
@@ -212,15 +222,57 @@ export default class Tokenizr {
         return new ParsingError(message, this._pos, this._line, this._column, this._input)
     }
 
+    /*  open tokenization transaction  */
+    begin () {
+        if (this._transaction)
+            throw new Error("nested transactions not supported")
+        this._log("BEGIN")
+        this._transaction = true
+        return this
+    }
+
+    /*  determine depth of still open tokenization transaction  */
+    depth () {
+        if (!this._transaction)
+            throw new Error("cannot determine depth -- no active transaction")
+        return this._consumed.length
+    }
+
+    /*  close (successfully) tokenization transaction  */
+    commit () {
+        if (!this._transaction)
+            throw new Error("cannot commit transaction -- no active transaction")
+        this._log("COMMIT")
+        this._consumed = []
+        this._transaction = false
+        return this
+    }
+
+    /*  close (unsuccessfully) tokenization transaction  */
+    rollback () {
+        if (!this._transaction)
+            throw new Error("cannot rollback transaction -- no active transaction")
+        this._log("ROLLBACK")
+        this._pending = this._consumed.concat(this._pending)
+        this._consumed = []
+        this._transaction = false
+        return this
+    }
+
     /*  determine and return next token  */
     token () {
         /*  if no more tokens are pending, try to determine a new one  */
-        if (this._tokens.length === 0)
+        if (this._pending.length === 0)
             this._tokenize()
 
         /*  return now potentially pending token  */
-        if (this._tokens.length > 0)
-            return this._tokens.shift()
+        if (this._pending.length > 0) {
+            let token = this._pending.shift()
+            if (this._transaction)
+                this._consumed.push(token)
+            this._log(`TOKEN: ${token.toString()}`)
+            return token
+        }
 
         /*  no more tokens  */
         return null
@@ -239,20 +291,21 @@ export default class Tokenizr {
     peek (offset) {
         if (typeof offset === "undefined")
             offset = 0
-        for (let i = 0; i < this._tokens.length + offset; i++)
+        for (let i = 0; i < this._pending.length + offset; i++)
              this._tokenize()
-        if (offset >= this._tokens.length)
+        if (offset >= this._pending.length)
             throw new Error("not enough tokens available for peek operation")
-        return this._tokens[offset]
+        this._log(`PEEK: ${this._pending[offset].toString()}`)
+        return this._pending[offset]
     }
 
     /*  skip one or more tokens  */
     skip (len) {
         if (typeof len === "undefined")
             len = 1
-        for (let i = 0; i < this._tokens.length + len; i++)
+        for (let i = 0; i < this._pending.length + len; i++)
              this._tokenize()
-        if (len > this._tokens.length)
+        if (len > this._pending.length)
             throw new Error("not enough tokens available for skip operation")
         while (len-- > 0)
             this.token()
@@ -260,15 +313,25 @@ export default class Tokenizr {
     }
 
     /*  consume the current token (by expecting it to be a particular symbol)  */
-    consume (value) {
-        for (let i = 0; i < this._tokens.length + 1; i++)
+    consume (type, value) {
+        for (let i = 0; i < this._pending.length + 1; i++)
              this._tokenize()
-        if (this._tokens.length === 0)
+        if (this._pending.length === 0)
             throw new Error("not enough tokens available for consume operation")
         let token = this.token()
-        if (token.value !== value)
-            throw new Error("expected token value \"" + value + "\" (" + typeof value + "): " +
-                "found token value \"" + token.value + "\" (" + typeof token.value + ")")
+        this._log(`CONSUME: ${token.toString()}`)
+        if (arguments.length === 2) {
+            if (!token.isA(type, value))
+                throw new ParsingError(`expected: <type: ${type}, value: ${JSON.stringify(value)} (${typeof value})>, ` +
+                    `found: <type: ${token.type}, value: ${JSON.stringify(token.value)} (${typeof token.value})>`,
+                    token.pos, token.line, token.column, this._input)
+        }
+        else {
+            if (!token.isA(type))
+                throw new ParsingError(`expected: <type: ${type}, value: * (any)>, ` +
+                    `found: <type: ${token.type}, value: ${JSON.stringify(token.value)} (${typeof token.value})>`,
+                    token.pos, token.line, token.column, this._input)
+        }
         return this
     }
 }
