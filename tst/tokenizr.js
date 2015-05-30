@@ -40,13 +40,29 @@ describe("Tokenizr Library", function () {
     })
     it("should have the expected functionality", function () {
         var tokenizr = new Tokenizr()
-        tokenizr.rule("default", /[a-zA-Z]+/,              function (/* m */) { this.accept("symbol") })
-        tokenizr.rule("default", /[0-9]+/,                 function (m)       { this.accept("number", parseInt(m[0])) })
-        tokenizr.rule("default", /"((?:\\\"|[^\r\n]+)+)"/, function (m)       { this.accept("string", m[1].replace(/\\"/g, "\"")) })
-        tokenizr.rule("default", /\/\*/,                   function (/* m */) { this.state("comment"); this.ignore() })
-        tokenizr.rule("comment", /\*\//,                   function (/* m */) { this.state(); this.ignore() })
-        tokenizr.rule("comment", /./,                      function (/* m */) { this.ignore() })
-        tokenizr.rule("default", /\s*,\s*/,                function (/* m */) { this.ignore() })
+        tokenizr.rule("default", /[a-zA-Z]+/, function (ctx /*, m */) {
+            ctx.accept("symbol")
+        })
+        tokenizr.rule("default", /[0-9]+/, function (ctx, m) {
+            ctx.accept("number", parseInt(m[0]))
+        })
+        tokenizr.rule("default", /"((?:\\\"|[^\r\n]+)+)"/, function (ctx, m) {
+            ctx.accept("string", m[1].replace(/\\"/g, "\""))
+        })
+        tokenizr.rule("default", /\/\*/, function (ctx /*, m */) {
+            ctx.state("comment")
+            ctx.ignore()
+        })
+        tokenizr.rule("comment", /\*\//, function (ctx /*, m */) {
+            ctx.state()
+            ctx.ignore()
+        })
+        tokenizr.rule("comment", /./, function (ctx /*, m */) {
+            ctx.ignore()
+        })
+        tokenizr.rule("default", /\s*,\s*/, function (ctx /*, m */) {
+            ctx.ignore()
+        })
 
         tokenizr.input("foo42,\n \"bar baz\",\n quux/* */")
 

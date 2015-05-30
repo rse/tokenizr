@@ -181,7 +181,7 @@ export default class Tokenizr {
                     this._ctx._repeat = false
                     this._ctx._reject = false
                     this._ctx._ignore = false
-                    this._rules[i].action.call(this._ctx, found)
+                    this._rules[i].action.call(this._ctx, this._ctx, found)
                     if (this._ctx._reject)
                         /*  reject current action, continue matching  */
                         continue
