@@ -45,7 +45,7 @@ module.exports = function (grunt) {
                 options: {
                     transform: [ "babelify" ],
                     plugin: [
-                        // [ "minifyify" ],
+                        [ "minifyify" ],
                         [ "browserify-derequire" ],
                         [ "browserify-header" ]
                     ],
