@@ -22,6 +22,29 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import Tokenizr from "./tokenizr-5-tokenizer"
-export default Tokenizr
+import excerpt from "./tokenizr-1-excerpt"
+
+/*  internal helper class for tokenization error reporting  */
+export default class TokenizationError extends Error {
+    /*  construct and initialize object  */
+    constructor (message = "Tokenization Error", tokenizr = null) {
+        super(message)
+        this.name     = "TokenizationError"
+        this.message  = message
+        this.tokenizr = tokenizr
+    }
+
+    /*  render a useful string representation  */
+    toString (noFinalNewLine) {
+        let l = excerpt(this.tokenizr._input, this.tokenizr._pos)
+        let prefix1 = `line ${this.tokenizr._line} (column ${this.tokenizr._column}): `
+        let prefix2 = ""
+        for (let i = 0; i < prefix1.length + l.prologText.length; i++)
+            prefix2 += " "
+        let msg = "Tokenization Error: " + this.message + "\n" +
+            prefix1 + l.prologText + l.tokenText + l.epilogText + "\n" +
+            prefix2 + "^" + (noFinalNewLine ? "" : "\n")
+        return msg
+    }
+}
 

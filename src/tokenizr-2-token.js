@@ -22,6 +22,15 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import Tokenizr from "./tokenizr-5-tokenizer"
-export default Tokenizr
+/*  internal helper class for token representation  */
+export default class Token {
+    constructor (type, value, text, pos = 0, line = 0, column = 0) {
+        this.type   = type
+        this.value  = value
+        this.text   = text
+        this.pos    = pos
+        this.line   = line
+        this.column = column
+    }
+}
 
