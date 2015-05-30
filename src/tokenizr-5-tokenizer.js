@@ -101,7 +101,7 @@ export default class Tokenizr {
         pattern = new RegExp(pattern.source, flags)
 
         /*  store rule  */
-        this._log(`rule: configure rule (state: ${state}, pattern: ${pattern})`)
+        this._log(`rule: configure rule (state: ${state}, pattern: ${pattern.source})`)
         this._rules.push({ state, pattern, action })
 
         return this
@@ -254,6 +254,29 @@ export default class Tokenizr {
         return this
     }
 
+    /*  execute multiple alternative callbacks  */
+    alternatives (...alternatives) {
+        let result = null
+        let depths = []
+        for (let i = 0; i < alternatives.length; i++) {
+            try {
+                this.begin()
+                result = alternatives[i]()
+                this.commit()
+                break
+            } catch (ex) {
+                depths.push({ ex: ex, depth: this.depth() })
+                this.rollback()
+                continue
+            }
+        }
+        if (result === null && depths.length > 0) {
+            depths = depths.sort((a, b) => a.depth - b.depth)
+            throw depths[0].ex
+        }
+        return result
+    }
+
     /*  determine and return next token  */
     token () {
         /*  if no more tokens are pending, try to determine a new one  */
@@ -329,5 +352,6 @@ export default class Tokenizr {
         }
         return token
     }
+
 }
 
