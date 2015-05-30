@@ -49,8 +49,16 @@ describe("Tokenizr Library", function () {
         tokenizr.rule("default", /\s*,\s*/,                function (/* m */) { this.ignore() })
 
         tokenizr.input("foo42,\n \"bar baz\",\n quux/* */")
+
         tokenizr.debug(true)
-        var tokens = tokenizr.tokens()
+        var tokens
+        try {
+            tokens = tokenizr.tokens()
+        }
+        catch (ex) {
+            console.log(ex.toString())
+            throw ex
+        }
 
         expect(tokens).to.be.a("array")
         expect(tokens).to.have.length(4)
