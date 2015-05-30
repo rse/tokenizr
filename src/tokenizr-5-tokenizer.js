@@ -28,7 +28,7 @@ import ParsingError  from "./tokenizr-3-error"
 import ActionContext from "./tokenizr-4-context"
 
 /*  external API class  */
-export default class Tokenizr {
+let Tokenizr = class Tokenizr {
     /*  construct and initialize the object  */
     constructor () {
         this._rules = []
@@ -342,6 +342,7 @@ export default class Tokenizr {
                 this.commit()
                 break
             } catch (ex) {
+                this._log(`EXCEPTION: ${ex.toString()}`)
                 depths.push({ ex: ex, depth: this.depth() })
                 this.rollback()
                 continue
@@ -354,4 +355,12 @@ export default class Tokenizr {
         return result
     }
 }
+
+/*  expose the utility classes, too  */
+Tokenizr.Token         = Token
+Tokenizr.ParsingError  = ParsingError
+Tokenizr.ActionContext = ActionContext
+
+/*  export the API class  */
+export default Tokenizr
 
