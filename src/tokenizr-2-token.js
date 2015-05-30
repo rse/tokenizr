@@ -32,5 +32,13 @@ export default class Token {
         this.line   = line
         this.column = column
     }
+    toString () {
+        return `<type: ${this.type}, ` +
+            `value: ${JSON.stringify(this.value)}, ` +
+            `text: "${this.text}", ` +
+            `pos: ${this.pos}, ` +
+            `line: ${this.line}, ` +
+            `column: ${this.column}>`
+    }
 }
 
