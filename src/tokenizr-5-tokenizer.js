@@ -45,8 +45,7 @@ export default class Tokenizr {
         this._line        = 1
         this._column      = 1
         this._state       = [ "default" ]
-        this._transaction = false
-        this._consumed    = []
+        this._transaction = []
         this._pending     = []
         this._ctx         = new ActionContext(this)
         return this
@@ -224,38 +223,34 @@ export default class Tokenizr {
 
     /*  open tokenization transaction  */
     begin () {
-        if (this._transaction)
-            throw new Error("nested transactions not supported")
-        this._log("BEGIN")
-        this._transaction = true
+        this._log(`BEGIN: level ${this._transaction.length}`)
+        this._transaction.unshift([])
         return this
     }
 
     /*  determine depth of still open tokenization transaction  */
     depth () {
-        if (!this._transaction)
+        if (this._transaction.length === 0)
             throw new Error("cannot determine depth -- no active transaction")
-        return this._consumed.length
+        return this._transaction[0].length
     }
 
     /*  close (successfully) tokenization transaction  */
     commit () {
-        if (!this._transaction)
+        if (this._transaction.length === 0)
             throw new Error("cannot commit transaction -- no active transaction")
-        this._log("COMMIT")
-        this._consumed = []
-        this._transaction = false
+        this._transaction.shift()
+        this._log(`COMMIT: level ${this._transaction.length}`)
         return this
     }
 
     /*  close (unsuccessfully) tokenization transaction  */
     rollback () {
-        if (!this._transaction)
+        if (this._transaction.length === 0)
             throw new Error("cannot rollback transaction -- no active transaction")
-        this._log("ROLLBACK")
-        this._pending = this._consumed.concat(this._pending)
-        this._consumed = []
-        this._transaction = false
+        this._pending = this._transaction[0].concat(this._pending)
+        this._transaction.shift()
+        this._log(`ROLLBACK: level ${this._transaction.length}`)
         return this
     }
 
@@ -268,8 +263,8 @@ export default class Tokenizr {
         /*  return now potentially pending token  */
         if (this._pending.length > 0) {
             let token = this._pending.shift()
-            if (this._transaction)
-                this._consumed.push(token)
+            if (this._transaction.length > 0)
+                this._transaction[0].push(token)
             this._log(`TOKEN: ${token.toString()}`)
             return token
         }
@@ -332,7 +327,7 @@ export default class Tokenizr {
                     `found: <type: ${token.type}, value: ${JSON.stringify(token.value)} (${typeof token.value})>`,
                     token.pos, token.line, token.column, this._input)
         }
-        return this
+        return token
     }
 }
 
