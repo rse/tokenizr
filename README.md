@@ -214,16 +214,26 @@ This is the main API class for establishing a lexical scanner.
   multiple times and supports nested transactions.
 
 - Method: `Tokenizr#depth(): Number`<br/>
-  FIXME
+  Return the number of already consumed tokens in the currently
+  active transaction. This is useful if multiple alternatives
+  are parsed and in case all failed, to report the error for
+  the most specific, i.e., the one which consumed most tokens.
 
 - Method: `Tokenizr#commit(): Tokenizr`<br/>
-  FIXME
+  End a transaction successfully. All consumed tokens are thrown away.
 
 - Method: `Tokenizr#rollback(): Tokenizr`<br/>
-  FIXME
+  End a transaction unsuccessfully. All consumed tokens are pushed back
+  and can be consumed again.
 
-- Method: `Tokenizr#alternatives(alternatives: Array[() => any]): any`<br/>
-  FIXME
+- Method: `Tokenizr#alternatives(...alternatives: Array[() => any]): any`<br/>
+  Utility method for parsing alternatives. It internally executes the
+  supplied callback functions in sequence, each wrapped into its own
+  transaction. The first one which succeeds (does not throw an exception
+  and returns a value) leads to the successful result. In case all
+  alternatives failed (all throw an exception), the exception of the
+  most-specific alterative (the one with the largest transaction depth)
+  is re-thrown.
 
 - Method: `Tokenizr#error(message: String): Tokenizr.ParsingError`<br/>
   Returns a new instance of `Tokenizr.ParsingError`, based on the
