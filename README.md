@@ -158,20 +158,24 @@ The output of running this sample program is:
 Application Programming Interface (API)
 ---------------------------------------
 
-- `new Tokenizr(): Tokenizr`<br/>
+### Class `Tokenizr`
+
+This is the main API class for establishing a lexical scanner.
+
+- Constructor: `Tokenizr(): Tokenizr`<br/>
   Create a new tokenization instance.
 
-- `Tokenizr#reset(): Tokenizr`<br/>
+- Method: `Tokenizr#reset(): Tokenizr`<br/>
   Reset the tokenization instance to a fresh one.
 
-- `Tokenizr#debug(enable: Boolean): Tokenizr`<br/>
+- Method: `Tokenizr#debug(enable: Boolean): Tokenizr`<br/>
   Enable (or disable) verbose logging for debugging purposes.
 
-- `Tokenizr#input(input: String): Tokenizr`<br/>
+- Method: `Tokenizr#input(input: String): Tokenizr`<br/>
   Set the input string to tokenize.
   This implicitly performs a `reset()` operation beforehand.
 
-- `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: TokenizerContext, match: Array[String]) => Void): Tokenizr`<br/>
+- Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: TokenizerContext, match: Array[String]) => Void): Tokenizr`<br/>
   Configure a token matching rule which executes its `action` in case the
   current tokenization state is one of the states in the comma-separated `state` (by default
   the rule matches all states if `state` is not specified) and the
@@ -179,10 +183,119 @@ Application Programming Interface (API)
   a context object for token repeating/rejecting/ignoring/accepting, the
   `match` argument is the result of the underlying `RegExp#exec` call.
 
-- `Tokenizr#token(): Token`<br/>
-  Get next token.
+- Method: `Tokenizr#token(): Tokenizr.Token`<br/>
+  Get the next token from the input. Internally, the
+  current position of the input is matched against the
+  patterns of all rules (in rule configuration order). The first rule
+  action which accepts the matching leads to the token.
 
-FIXME: methods still to be documented!
+- Method: `Tokenizr#tokens(): Array[Tokenizr.Token]`<br/>
+  Tokenizes the entire input and returns all the corresponding tokens.
+  This is a convenience method only. Usually one takes single
+  tokens at a time.
+
+- Method: `Tokenizr#peek(offset?: Number): Tokenizr.Token`<br/>
+  FIXME
+
+- Method: `Tokenizr#skip(next?: Number): Tokenizr`<br/>
+  FIXME
+
+- Method: `Tokenizr#consume(type: String, value?: String): Tokenizr`<br/>
+  FIXME
+
+- Method: `Tokenizr#begin(): Tokenizr`<br/>
+  FIXME
+
+- Method: `Tokenizr#depth(): Number`<br/>
+  FIXME
+
+- Method: `Tokenizr#commit(): Tokenizr`<br/>
+  FIXME
+
+- Method: `Tokenizr#rollback(): Tokenizr`<br/>
+  FIXME
+
+- Method: `Tokenizr#alternatives(alternatives: Array[() => any]): any`<br/>
+  FIXME
+
+- Method: `Tokenizr#error(message: String): Tokenizr.ParsingError`<br/>
+  Returns a new instance of `Tokenizr.ParsingError`, based on the
+  current input character stream position.
+
+### Class `Tokenizr.Token`
+
+This is the class of all returned tokens.
+
+- Property: `Tokenizr.Token#type: String`<br/>
+  FIXME
+
+- Property: `Tokenizr.Token#value: any`<br/>
+  FIXME
+
+- Property: `Tokenizr.Token#text: String`<br/>
+  FIXME
+
+- Property: `Tokenizr.Token#pos: Number`<br/>
+  FIXME
+
+- Property: `Tokenizr.Token#line: Number`<br/>
+  FIXME
+
+- Property: `Tokenizr.Token#column: Number`<br/>
+  FIXME
+
+- Method: `Tokenizr.Token#toString(): String`<br/>
+  FIXME
+
+- Method: `Tokenizr.Token#isA(type: String, value?: any): String`<br/>
+  FIXME
+
+### Class `Tokenizr.ParsingError`
+
+This is the class of all thrown exceptions related to parsing.
+
+- Property: `Tokenizr.ParsingError#name: String`<br/>
+  FIXME
+
+- Property: `Tokenizr.ParsingError#message: String`<br/>
+  FIXME
+
+- Property: `Tokenizr.ParsingError#pos: Number`<br/>
+  FIXME
+
+- Property: `Tokenizr.ParsingError#line: Number`<br/>
+  FIXME
+
+- Property: `Tokenizr.ParsingError#column: Number`<br/>
+  FIXME
+
+- Property: `Tokenizr.ParsingError#input: String`<br/>
+  FIXME
+
+- Method: `Tokenizr.ParsingError#toString(): String`<br/>
+  FIXME
+
+### Class `Tokenizr.ActionContext`
+
+This is the class of all rule action contexts.
+
+- Method: `Tokenizr.ActionContext#data(key: String, value?: any): any`<br/>
+  FIXME
+
+- Method: `Tokenizr.ActionContext#state(new?: String): String`<br/>
+  FIXME
+
+- Method: `Tokenizr.ActionContext#repeat(): Tokenizr.ActionContext`<br/>
+  FIXME
+
+- Method: `Tokenizr.ActionContext#reject(): Tokenizr.ActionContext`<br/>
+  FIXME
+
+- Method: `Tokenizr.ActionContext#ignore(): Tokenizr.ActionContext`<br/>
+  FIXME
+
+- Method: `Tokenizr.ActionContext#accept(type: String, value?: any): Tokenizr.ActionContext`<br/>
+  FIXME
 
 Implementation Notice
 ---------------------
