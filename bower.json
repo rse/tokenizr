@@ -1,6 +1,6 @@
 {
     "name":        "tokenizr",
-    "version":     "0.9.0",
+    "version":     "0.9.1",
     "description": "String Tokenization Library for JavaScript",
     "main":        "lib/tokenizr.js",
     "homepage":    "https://github.com/rse/tokenizr",
