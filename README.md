@@ -195,16 +195,23 @@ This is the main API class for establishing a lexical scanner.
   tokens at a time.
 
 - Method: `Tokenizr#peek(offset?: Number): Tokenizr.Token`<br/>
-  FIXME
+  Peek at the following token at the (0-based) offset without consuming
+  the token. This is the secondary function used in Recursive Descent
+  parsers.
 
 - Method: `Tokenizr#skip(next?: Number): Tokenizr`<br/>
-  FIXME
+  Consume the `next` number of following tokens.
 
 - Method: `Tokenizr#consume(type: String, value?: String): Tokenizr`<br/>
-  FIXME
+  Match (with `Tokenizr.Token#isA`) the next token. If it matches,
+  consume it. If it does not match, throw a `Tokenizr.ParsingError`.
+  This is the primary function used in Recursive Descent parsers.
 
 - Method: `Tokenizr#begin(): Tokenizr`<br/>
-  FIXME
+  Begin a transaction. Until `commit` or `rollback` are called, all
+  consumed tokens will be internally remembered and be either thrown
+  away (on `commit`) or pushed back (on `rollback`). This can be used
+  multiple times and supports nested transactions.
 
 - Method: `Tokenizr#depth(): Number`<br/>
   FIXME
