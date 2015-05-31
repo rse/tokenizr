@@ -155,6 +155,10 @@ The output of running this sample program is:
 <type: char, value: "}", text: "}", pos: 149, line: 9, column: 5>
 ```
 
+With the help of an Abstract Syntax Tree (AST) library like
+[ASTy](https://github.com/rse/asty) and a query library like [ASTq](https://github.com/rse/astq)
+you can [write powerful Recursive Descent based parsers](https://github.com/rse/parsing-techniques/blob/master/cfg2kv-3-ls-rdp-ast/cfg2kv.js).
+
 Application Programming Interface (API)
 ---------------------------------------
 
