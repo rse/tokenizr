@@ -227,75 +227,86 @@ This is the main API class for establishing a lexical scanner.
 This is the class of all returned tokens.
 
 - Property: `Tokenizr.Token#type: String`<br/>
-  FIXME
+  The type of the token.
 
 - Property: `Tokenizr.Token#value: any`<br/>
-  FIXME
+  The value of the token. By default this is the same as
+  `Tokenizr.Token#text`, but can be any pre-processed value.
 
 - Property: `Tokenizr.Token#text: String`<br/>
-  FIXME
+  The corresponding input text of this token.
 
 - Property: `Tokenizr.Token#pos: Number`<br/>
-  FIXME
+  The (0-based) position in the input.
 
 - Property: `Tokenizr.Token#line: Number`<br/>
-  FIXME
+  The (1-based) line number in the input.
 
 - Property: `Tokenizr.Token#column: Number`<br/>
-  FIXME
+  The (1-based) column number in the input.
 
 - Method: `Tokenizr.Token#toString(): String`<br/>
-  FIXME
+  Returns a formatted representation of the token.
 
 - Method: `Tokenizr.Token#isA(type: String, value?: any): String`<br/>
-  FIXME
+  Checks whether token matches against a particular type and optionally
+  a particular value.
 
 ### Class `Tokenizr.ParsingError`
 
 This is the class of all thrown exceptions related to parsing.
 
 - Property: `Tokenizr.ParsingError#name: String`<br/>
-  FIXME
+  Always just the string `ParsingError` to be complaint to
+  the JavaScript `Error` class specification.
 
 - Property: `Tokenizr.ParsingError#message: String`<br/>
-  FIXME
+  The particular error message.
 
 - Property: `Tokenizr.ParsingError#pos: Number`<br/>
-  FIXME
+  The (0-based) position in the input.
 
 - Property: `Tokenizr.ParsingError#line: Number`<br/>
-  FIXME
+  The (1-based) line number in the input.
 
 - Property: `Tokenizr.ParsingError#column: Number`<br/>
-  FIXME
+  The (1-based) column number in the input.
 
 - Property: `Tokenizr.ParsingError#input: String`<br/>
-  FIXME
+  The input itself.
 
 - Method: `Tokenizr.ParsingError#toString(): String`<br/>
-  FIXME
+  Returns a formatted representation of the error.
 
 ### Class `Tokenizr.ActionContext`
 
 This is the class of all rule action contexts.
 
 - Method: `Tokenizr.ActionContext#data(key: String, value?: any): any`<br/>
-  FIXME
+  Store or retrieve any user data (indexed by `key`) to the action
+  context for sharing data between rules.
 
 - Method: `Tokenizr.ActionContext#state(new?: String): String`<br/>
-  FIXME
+  Push or pop a state to/from the current tokenization state stack.
 
 - Method: `Tokenizr.ActionContext#repeat(): Tokenizr.ActionContext`<br/>
-  FIXME
+  Mark the tokenization process to repeat the matching at the current
+  input position from scratch. You first have to switch to a different
+  state or this will lead to an endless loop, of course.
 
 - Method: `Tokenizr.ActionContext#reject(): Tokenizr.ActionContext`<br/>
-  FIXME
+  Mark the current matching to be rejected. The tokenization process
+  will continue matching following rules.
 
 - Method: `Tokenizr.ActionContext#ignore(): Tokenizr.ActionContext`<br/>
-  FIXME
+  Mark the current matching to be just ignored. This is usually
+  used for skipping whitespaces.
 
 - Method: `Tokenizr.ActionContext#accept(type: String, value?: any): Tokenizr.ActionContext`<br/>
-  FIXME
+  Accept the current matching and produce a token of `type` and
+  optionally with a different `value` (usually a pre-processed variant
+  of the matched text). This function can be called multiple times to
+  produce one or more tokens.
 
 Implementation Notice
 ---------------------
