@@ -217,11 +217,6 @@ let Tokenizr = class Tokenizr {
         throw this.error("token not recognized")
     }
 
-    /*  create an error message for the current position  */
-    error (message) {
-        return new ParsingError(message, this._pos, this._line, this._column, this._input)
-    }
-
     /*  determine and return next token  */
     token () {
         /*  if no more tokens are pending, try to determine a new one  */
@@ -353,6 +348,11 @@ let Tokenizr = class Tokenizr {
             throw depths[0].ex
         }
         return result
+    }
+
+    /*  create an error message for the current position  */
+    error (message) {
+        return new ParsingError(message, this._pos, this._line, this._column, this._input)
     }
 }
 
