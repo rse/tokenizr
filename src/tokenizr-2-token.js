@@ -35,7 +35,7 @@ export default class Token {
     toString () {
         return `<type: ${this.type}, ` +
             `value: ${JSON.stringify(this.value)}, ` +
-            `text: "${this.text}", ` +
+            `text: ${JSON.stringify(this.text)}, ` +
             `pos: ${this.pos}, ` +
             `line: ${this.line}, ` +
             `column: ${this.column}>`
