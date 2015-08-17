@@ -76,6 +76,23 @@ let Tokenizr = class Tokenizr {
         return this
     }
 
+    /*  change state  */
+    state (state) {
+        if (arguments.length === 1) {
+            if (typeof state !== "string")
+                throw new Error("parameter \"state\" not a String")
+            this._state.push(state)
+        }
+        else if (arguments.length === 0) {
+            if (this._state.length < 2)
+                throw new Error("no more custom states to pop")
+            this._state.pop()
+        }
+        else
+            throw new Error("invalid number of arguments")
+        return this
+    }
+
     /*  configure a tokenization rule  */
     rule (state, pattern, action) {
         /*  support optional states  */

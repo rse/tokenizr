@@ -180,6 +180,11 @@ This is the main API class for establishing a lexical scanner.
   Set the input string to tokenize.
   This implicitly performs a `reset()` operation beforehand.
 
+- Method: `Tokenizr#state(state?: String): Tokenizr`<br/>
+  Push or pop a state onto the state stack. Use this to initialy start
+  tokenizing with a custom state. The initial and default state (which
+  cannot be pop'ed at all) is named `default`.
+
 - Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: TokenizerContext, match: Array[String]) => Void): Tokenizr`<br/>
   Configure a token matching rule which executes its `action` in case the
   current tokenization state is one of the states in the comma-separated `state` (by default
