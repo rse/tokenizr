@@ -56,7 +56,7 @@ export default class ActionContext {
             this._tokenizr._log(`    STATE (POP): ` +
                 `old: ${this._tokenizr._state[this._tokenizr._state.length - 1]}, ` +
                 `new: ${this._tokenizr._state[this._tokenizr._state.length - 2]}`)
-            this._tokenizr._state.pop(state)
+            this._tokenizr._state.pop()
         }
         else
             throw new Error("internal error: no more states to pop")
