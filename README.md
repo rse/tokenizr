@@ -313,6 +313,9 @@ This is the class of all rule action contexts.
   Store or retrieve any user data (indexed by `key`) to the action
   context for sharing data between rules.
 
+- Method: `Tokenizr.ActionContext#info(): { line: number, column: number, pos: number, len: number }`<br/>
+  Retrieve information about the current matching.
+
 - Method: `Tokenizr.ActionContext#state(new?: String): String`<br/>
   Push or pop a state to/from the current tokenization state stack.
 
