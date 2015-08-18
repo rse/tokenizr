@@ -44,6 +44,16 @@ export default class ActionContext {
         return valueOld
     }
 
+    /*  retrieve information of current matching  */
+    info () {
+        return {
+            line:   this._tokenizr._line,
+            column: this._tokenizr._column,
+            pos:    this._tokenizr._pos,
+            len:    this._match[0].length
+        }
+    }
+
     /*  set a new state in the attached tokenizer  */
     state (state) {
         if (typeof state === "string") {
@@ -70,21 +80,21 @@ export default class ActionContext {
         return this
     }
 
-    /*  mark current action to be rejected  */
+    /*  mark current matching to be rejected  */
     reject () {
         this._tokenizr._log(`    REJECT`)
         this._reject = true
         return this
     }
 
-    /*  mark current action to be ignored  */
+    /*  mark current matching to be ignored  */
     ignore () {
         this._tokenizr._log(`    IGNORE`)
         this._ignore = true
         return this
     }
 
-    /*  accept a new token  */
+    /*  accept current matching is a new token  */
     accept (type, value) {
         if (arguments.length < 2)
             value = this._match[0]
