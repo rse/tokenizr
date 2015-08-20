@@ -50,14 +50,19 @@ describe("Tokenizr Library", function () {
             ctx.accept("string", m[1].replace(/\\"/g, "\""))
         })
         tokenizr.rule("default", /\/\*/, function (ctx /*, m */) {
-            ctx.state("comment")
+            ctx.push("comment")
+            ctx.tag("bar")
             ctx.ignore()
         })
-        tokenizr.rule("comment", /\*\//, function (ctx /*, m */) {
-            ctx.state()
+        tokenizr.rule("comment #foo #bar", /\*\//, function (/* ctx, m */) {
+            throw new Error("should never enter")
+        })
+        tokenizr.rule("comment #bar", /\*\//, function (ctx /*, m */) {
+            ctx.untag("bar")
+            ctx.pop()
             ctx.ignore()
         })
-        tokenizr.rule("comment", /./, function (ctx /*, m */) {
+        tokenizr.rule("comment #bar", /./, function (ctx /*, m */) {
             ctx.ignore()
         })
         tokenizr.rule("default", /\s*,\s*/, function (ctx /*, m */) {

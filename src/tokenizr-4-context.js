@@ -54,22 +54,28 @@ export default class ActionContext {
         }
     }
 
-    /*  set a new state in the attached tokenizer  */
-    state (state) {
-        if (typeof state === "string") {
-            this._tokenizr._log(`    STATE (PUSH): ` +
-                `old: ${this._tokenizr._state[this._tokenizr._state.length- 1]}, ` +
-                `new: ${state}`)
-            this._tokenizr._state.push(state)
-        }
-        else if (this._tokenizr._state.length >= 2) {
-            this._tokenizr._log(`    STATE (POP): ` +
-                `old: ${this._tokenizr._state[this._tokenizr._state.length - 1]}, ` +
-                `new: ${this._tokenizr._state[this._tokenizr._state.length - 2]}`)
-            this._tokenizr._state.pop()
+    /*  pass-through functions to attached tokenizer  */
+    push () {
+        this._tokenizr.push.apply(this._tokenizr, arguments)
+        return this
+    }
+    pop () {
+        return this._tokenizr.pop.apply(this._tokenizr, arguments)
+    }
+    state () {
+        if (arguments.length > 0) {
+            this._tokenizr.state.apply(this._tokenizr, arguments)
+            return this
         }
         else
-            throw new Error("internal error: no more states to pop")
+            return this._tokenizr.state.apply(this._tokenizr, arguments)
+    }
+    tag () {
+        this._tokenizr.tag.apply(this._tokenizr, arguments)
+        return this
+    }
+    untag () {
+        this._tokenizr.untag.apply(this._tokenizr, arguments)
         return this
     }
 

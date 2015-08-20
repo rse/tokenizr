@@ -180,10 +180,24 @@ This is the main API class for establishing a lexical scanner.
   Set the input string to tokenize.
   This implicitly performs a `reset()` operation beforehand.
 
-- Method: `Tokenizr#state(state?: String): Tokenizr`<br/>
-  Push or pop a state onto the state stack. Use this to initialy start
-  tokenizing with a custom state. The initial and default state (which
-  cannot be pop'ed at all) is named `default`.
+- Method: `Tokenizr#push(state: String): Tokenizr`<br/>
+  Push a state onto the state stack.
+
+- Method: `Tokenizr#pop(): String`<br/>
+  Pop a state from the state stack.
+  The initial/first/lowest stack value cannot be popped.
+
+- Method: `Tokenizr#state(state: String): Tokenizr`<br/>
+  Method: `Tokenizr#state(): String`<br/>
+  Set or get the state on the top of the state stack. Use this to
+  initialy start tokenizing with a custom state. The initial state is
+  named `default`.
+
+- Method: `Tokenizr#tag(tag: String): Tokenizr`<br/>
+  Set a tag. The tag has to be matched by rules.
+
+- Method: `Tokenizr#untag(tag: String): Tokenizr`<br/>
+  Unset a tag. The tag no longer has to be matched by rules.
 
 - Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: TokenizerContext, match: Array[String]) => Void): Tokenizr`<br/>
   Configure a token matching rule which executes its `action` in case the
@@ -316,8 +330,13 @@ This is the class of all rule action contexts.
 - Method: `Tokenizr.ActionContext#info(): { line: number, column: number, pos: number, len: number }`<br/>
   Retrieve information about the current matching.
 
-- Method: `Tokenizr.ActionContext#state(new?: String): String`<br/>
-  Push or pop a state to/from the current tokenization state stack.
+- Method: `Tokenizr.ActionContext#push(state: String): Tokenizr`<br/>
+  Method: `Tokenizr.ActionContext#pop(): String`<br/>
+  Method: `Tokenizr.ActionContext#state(state: String): Tokenizr.ActionContext`<br/>
+  Method: `Tokenizr.ActionContext#state(): String`<br/>
+  Method: `Tokenizr.ActionContext#tag(tag: String): Tokenizr.ActionContext`<br/>
+  Method: `Tokenizr.ActionContext#untag(tag: String): Tokenizr.ActionContext`<br/>
+  Methods just passed-through to the attached Tokenizr. See above for details.
 
 - Method: `Tokenizr.ActionContext#repeat(): Tokenizr.ActionContext`<br/>
   Mark the tokenization process to repeat the matching at the current

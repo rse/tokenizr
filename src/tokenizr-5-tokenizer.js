@@ -45,6 +45,7 @@ let Tokenizr = class Tokenizr {
         this._line        = 1
         this._column      = 1
         this._state       = [ "default" ]
+        this._tag         = {}
         this._transaction = []
         this._pending     = []
         this._ctx         = new ActionContext(this)
@@ -76,20 +77,82 @@ let Tokenizr = class Tokenizr {
         return this
     }
 
-    /*  change state  */
+    /*  push state  */
+    push (state) {
+        /*  sanity check arguments  */
+        if (arguments.length !== 1)
+            throw new Error("invalid number of arguments")
+        if (typeof state !== "string")
+            throw new Error("parameter \"state\" not a String")
+
+        /*  push new state  */
+        this._log(`    STATE (PUSH): ` +
+            `old: <${this._state[this._state.length - 1]}>, ` +
+            `new: <${state}>`)
+        this._state.push(state)
+        return this
+    }
+
+    /*  pop state  */
+    pop () {
+        /*  sanity check arguments  */
+        if (arguments.length !== 0)
+            throw new Error("invalid number of arguments")
+        if (this._state.length < 2)
+            throw new Error("no more custom states to pop")
+
+        /*  pop old state  */
+        this._log(`    STATE (POP): ` +
+            `old: <${this._state[this._state.length - 1]}>, ` +
+            `new: <${this._state[this._state.length - 2]}>`)
+        return this._state.pop()
+    }
+
+    /*  get/set state  */
     state (state) {
         if (arguments.length === 1) {
+            /*  sanity check arguments  */
             if (typeof state !== "string")
                 throw new Error("parameter \"state\" not a String")
-            this._state.push(state)
+
+            /*  change current state  */
+            this._log(`    STATE (SET): ` +
+                `old: <${this._state[this._state.length - 1]}>, ` +
+                `new: <${state}>`)
+            this._state[this._state.length - 1] = state
+            return this
         }
-        else if (arguments.length === 0) {
-            if (this._state.length < 2)
-                throw new Error("no more custom states to pop")
-            this._state.pop()
-        }
+        else if (arguments.length === 0)
+            return this._state[this._state.length - 1]
         else
             throw new Error("invalid number of arguments")
+    }
+
+    /*  set a tag  */
+    tag (tag) {
+        /*  sanity check arguments  */
+        if (arguments.length !== 1)
+            throw new Error("invalid number of arguments")
+        if (typeof tag !== "string")
+            throw new Error("parameter \"tag\" not a String")
+
+        /*  set tag  */
+        this._log(`    TAG (ADD): ${tag}`)
+        this._tag[tag] = true
+        return this
+    }
+
+    /*  unset a tag  */
+    untag (tag) {
+        /*  sanity check arguments  */
+        if (arguments.length !== 1)
+            throw new Error("invalid number of arguments")
+        if (typeof tag !== "string")
+            throw new Error("parameter \"tag\" not a String")
+
+        /*  delete tag  */
+        this._log(`    TAG (DEL): ${tag}`)
+        delete this._tag[tag]
         return this
     }
 
@@ -110,7 +173,15 @@ let Tokenizr = class Tokenizr {
             throw new Error("parameter \"action\" not a Function")
 
         /*  post-process state  */
-        state = state.split(/\s*,\s*/g)
+        state = state.split(/\s*,\s*/g).map((entry) => {
+            let items  = entry.split(/\s+/g)
+            let states = items.filter((item) => item.match(/^#/) === null)
+            let tags   = items.filter((item) => item.match(/^#/) !== null)
+                .map((tag) => tag.replace(/^#/, ""))
+            if (states.length !== 1)
+                throw new Error("exactly one state required")
+            return { state: states[0], tags: tags }
+        })
 
         /*  post-process pattern  */
         var flags = "g"
@@ -167,21 +238,39 @@ let Tokenizr = class Tokenizr {
             /*  some optional debugging context  */
             if (this._debug) {
                 let e = excerpt(this._input, this._pos)
-                this._log(`INPUT: state: ${this._state[this._state.length - 1]}, text: ` +
+                let tags = Object.keys(this._tag).map((tag) => `#${tag}`).join(" ")
+                this._log(`INPUT: state: <${this._state[this._state.length - 1]}>, tags: <${tags}>, text: ` +
                     (e.prologTrunc ? "..." : "\"") + `${e.prologText}<${e.tokenText}>${e.epilogText}` +
                     (e.epilogTrunc ? "..." : "\"") + `, at: <line ${this._line}, column ${this._column}>`)
             }
 
             /*  iterate over all rules...  */
             for (let i = 0; i < this._rules.length; i++) {
-                if (this._debug)
-                    this._log(`  RULE: state(s): ${this._rules[i].state.join(",")}, ` +
+                if (this._debug) {
+                    let state = this._rules[i].state.map((item) => {
+                        let output = item.state
+                        if (item.tags.length > 0)
+                            output += " " + item.tags.map((tag) => `#${tag}`).join(" ")
+                        return output
+                    }).join(", ")
+                    this._log(`  RULE: state(s): <${state}>, ` +
                         `pattern: ${this._rules[i].pattern.source}`)
+                }
 
-                /*  one of rule's states has to match  */
-                if (!(   (   this._rules[i].state.length === 1
-                          && this._rules[i].state[0] === "*"  )
-                      || this._rules[i].state.indexOf(this._state[this._state.length - 1]) >= 0))
+                /*  one of rule's states (and all of its tags) has to match  */
+                let matches = false
+                let states = this._rules[i].state.map((item) => item.state)
+                let idx = states.indexOf("*")
+                if (idx < 0)
+                    idx = states.indexOf(this._state[this._state.length - 1])
+                if (idx >= 0) {
+                    matches = true
+                    let tags = this._rules[i].state[idx].tags
+                    tags = tags.filter((tag) => !this._tag[tag])
+                    if (tags.length > 0)
+                        matches = false
+                }
+                if (!matches)
                     continue
 
                 /*  match pattern at the last position  */
