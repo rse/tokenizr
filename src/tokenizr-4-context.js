@@ -74,6 +74,9 @@ export default class ActionContext {
         this._tokenizr.tag.apply(this._tokenizr, arguments)
         return this
     }
+    tagged () {
+        return this._tokenizr.tagged.apply(this._tokenizr, arguments)
+    }
     untag () {
         this._tokenizr.untag.apply(this._tokenizr, arguments)
         return this

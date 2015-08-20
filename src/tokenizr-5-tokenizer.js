@@ -142,6 +142,18 @@ let Tokenizr = class Tokenizr {
         return this
     }
 
+    /*  check whether tag is set  */
+    tagged (tag) {
+        /*  sanity check arguments  */
+        if (arguments.length !== 1)
+            throw new Error("invalid number of arguments")
+        if (typeof tag !== "string")
+            throw new Error("parameter \"tag\" not a String")
+
+        /*  set tag  */
+        return (this._tag[tag] === true)
+    }
+
     /*  unset a tag  */
     untag (tag) {
         /*  sanity check arguments  */

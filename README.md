@@ -196,6 +196,9 @@ This is the main API class for establishing a lexical scanner.
 - Method: `Tokenizr#tag(tag: String): Tokenizr`<br/>
   Set a tag. The tag has to be matched by rules.
 
+- Method: `Tokenizr#tagged(tag: String): Boolean`<br/>
+  Check whether a tag is set.
+
 - Method: `Tokenizr#untag(tag: String): Tokenizr`<br/>
   Unset a tag. The tag no longer has to be matched by rules.
 
@@ -335,6 +338,7 @@ This is the class of all rule action contexts.
   Method: `Tokenizr.ActionContext#state(state: String): Tokenizr.ActionContext`<br/>
   Method: `Tokenizr.ActionContext#state(): String`<br/>
   Method: `Tokenizr.ActionContext#tag(tag: String): Tokenizr.ActionContext`<br/>
+  Method: `Tokenizr.ActionContext#tagged(tag: String): Boolean`<br/>
   Method: `Tokenizr.ActionContext#untag(tag: String): Tokenizr.ActionContext`<br/>
   Methods just passed-through to the attached Tokenizr. See above for details.
 
