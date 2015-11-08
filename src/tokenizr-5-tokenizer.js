@@ -356,11 +356,11 @@ let Tokenizr = class Tokenizr {
 
     /*  determine and return all tokens  */
     tokens () {
-        let tokens = []
+        let result = []
         let token
         while ((token = this.token()) !== null)
-            tokens.push(token)
-        return tokens
+            result.push(token)
+        return result
     }
 
     /*  peek at the next token or token at particular offset  */

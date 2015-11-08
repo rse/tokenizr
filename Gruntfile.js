@@ -43,7 +43,7 @@ module.exports = function (grunt) {
                     "lib/tokenizr.js": [ "src/tokenizr.js" ]
                 },
                 options: {
-                    transform: [ "babelify" ],
+                    transform: [ [ "babelify", { presets: [ "es2015" ] } ] ],
                     plugin: [
                         [ "minifyify" ],
                         [ "browserify-derequire" ],
