@@ -39,7 +39,3 @@ clean: bootstrap
 distclean: bootstrap
 	@$(GRUNT) clean:clean clean:distclean
 
-update-package-json: bootstrap
-	$(NPM) install npm-check-updates
-	./node_modules/npm-check-updates/bin/npm-check-updates -u
-
