@@ -28,7 +28,7 @@
 /* global require: false */
 /* jshint -W030: false */
 
-var Tokenizr = require("../lib/tokenizr.js").default
+var Tokenizr = require("../lib/tokenizr.js")
 
 describe("Tokenizr Library", function () {
     it("should expose its official API", function () {

@@ -23,5 +23,6 @@
 */
 
 import Tokenizr from "./tokenizr-5-tokenizer"
-export default Tokenizr
+
+module.exports = Tokenizr
 
