@@ -82,7 +82,7 @@ describe("Tokenizr Library", function () {
         }
 
         expect(tokens).to.be.a("array")
-        expect(tokens).to.have.length(4)
+        expect(tokens).to.have.length(5)
         expect(tokens[0]).to.be.a("object").and.to.be.deep
             .equal({ type: "symbol", value: "foo", text: "foo", pos: 0, line: 1, column: 1 })
         expect(tokens[1]).to.be.a("object").and.to.be.deep
