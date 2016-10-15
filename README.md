@@ -157,6 +157,27 @@ The output of running this sample program is:
 <type: EOF, value: "", text: "", pos: 122, line: 9, column: 1>
 ```
 
+If you want to combine multiple single-char plaintext tokens into
+a multi-char plaintext token, you can use the following code fragment:
+
+```
+let plaintext = ""
+lexer.before((ctx, match, rule) => {
+    if (rule.name !== "plaintext" && plaintext !== "") {
+        ctx.accept("plaintext", plaintext)
+        plaintext = ""
+    }
+})
+lexer.rule(/./, (ctx, match) => {
+    plaintext += match[0]
+    ctx.ignore()
+}, "plaintext")
+lexer.finish((ctx) => {
+    if (plaintext !== "")
+        ctx.accept("plaintext", plaintext)
+})
+```
+
 With the additional help of an Abstract Syntax Tree (AST) library like
 [ASTy](https://github.com/rse/asty) and a query library like [ASTq](https://github.com/rse/astq)
 you can [write powerful Recursive Descent based parsers](https://github.com/rse/parsing-techniques/blob/master/cfg2kv-3-ls-rdp-ast/cfg2kv.js)
@@ -204,6 +225,25 @@ This is the main API class for establishing a lexical scanner.
 
 - Method: `Tokenizr#untag(tag: String): Tokenizr`<br/>
   Unset a particular tag. The tag no longer will be matched by rules.
+
+- Method: `Tokenizr#before(action: (ctx: TokenizerContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
+  Configure a single action which is called directly before any rule
+  action (configured with `Tokenizr#rule()`) is called. This can be used
+  to execute a common action just before all rule actions. The `rule`
+  argument is the `Tokenizr#rule()` information of the particular rule
+  which is executed.
+
+- Method: `Tokenizr#after(action: (ctx: TokenizerContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
+  Configure a single action which is called directly after any rule
+  action (configured with `Tokenizr#rule()`) is called. This can be used
+  to execute a common action just after all rule actions. The `rule`
+  argument is the `Tokenizr#rule()` information of the particular rule
+  which is executed.
+
+- Method: `Tokenizr#finish(action: (ctx: TokenizerContext) => Void): Tokenizr`<br/>
+  Configure a single action which is called directly before an `EOF`
+  token is emitted. This can be used to execute a common action just
+  after the last rule action was called.
 
 - Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: TokenizerContext, match: Array[String]) => Void): Tokenizr`<br/>
   Configure a token matching rule which executes its `action` in case

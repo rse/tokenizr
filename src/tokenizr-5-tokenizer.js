@@ -31,8 +31,11 @@ import ActionContext from "./tokenizr-4-context"
 let Tokenizr = class Tokenizr {
     /*  construct and initialize the object  */
     constructor () {
-        this._rules = []
-        this._debug = false
+        this._before = null
+        this._after  = null
+        this._finish = null
+        this._rules  = []
+        this._debug  = false
         this.reset()
     }
 
@@ -168,11 +171,33 @@ let Tokenizr = class Tokenizr {
         return this
     }
 
+    /*  configure a tokenization before-rule callback  */
+    before (action) {
+        this._before = action
+        return this
+    }
+
+    /*  configure a tokenization after-rule callback  */
+    after (action) {
+        this._after = action
+        return this
+    }
+
+    /*  configure a tokenization finish callback  */
+    finish (action) {
+        this._finish = action
+        return this
+    }
+
     /*  configure a tokenization rule  */
-    rule (state, pattern, action) {
+    rule (state, pattern, action, name = "unknown") {
         /*  support optional states  */
-        if (arguments.length === 2) {
+        if (arguments.length === 2 && typeof pattern === "function") {
             [ pattern, action ] = [ state, pattern ]
+            state = "*"
+        }
+        else if (arguments.length === 3 && typeof pattern === "function") {
+            [ pattern, action, name ] = [ state, pattern, action ]
             state = "*"
         }
 
@@ -183,6 +208,8 @@ let Tokenizr = class Tokenizr {
             throw new Error("parameter \"pattern\" not a RegExp")
         if (typeof action !== "function")
             throw new Error("parameter \"action\" not a Function")
+        if (typeof name !== "string")
+            throw new Error("parameter \"name\" not a String")
 
         /*  post-process state  */
         state = state.split(/\s*,\s*/g).map((entry) => {
@@ -203,7 +230,7 @@ let Tokenizr = class Tokenizr {
 
         /*  store rule  */
         this._log(`rule: configure rule (state: ${state}, pattern: ${pattern.source})`)
-        this._rules.push({ state, pattern, action })
+        this._rules.push({ state, pattern, action, name })
 
         return this
     }
@@ -236,6 +263,8 @@ let Tokenizr = class Tokenizr {
         /*  tokenize only as long as there is input left  */
         if (this._pos >= this._len) {
             if (!this._eof) {
+                if (this._finish !== null)
+                    this._finish.call(this._ctx, this._ctx)
                 this._eof = true
                 this._pending.push(new Token("EOF", "", "", this._pos, this._line, this._column))
             }
@@ -300,7 +329,11 @@ let Tokenizr = class Tokenizr {
                     this._ctx._repeat = false
                     this._ctx._reject = false
                     this._ctx._ignore = false
+                    if (this._before !== null)
+                        this._before.call(this._ctx, this._ctx, found, this._rules[i])
                     this._rules[i].action.call(this._ctx, this._ctx, found)
+                    if (this._after !== null)
+                        this._after.call(this._ctx, this._ctx, found, this._rules[i])
                     if (this._ctx._reject)
                         /*  reject current action, continue matching  */
                         continue
