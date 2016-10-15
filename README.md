@@ -136,24 +136,24 @@ lexer.tokens().forEach((token) => {
 The output of running this sample program is:
 
 ```
-<type: id, value: "foo", text: "foo", pos: 5, line: 2, column: 5>
-<type: char, value: "{", text: "{", pos: 9, line: 2, column: 9>
-<type: id, value: "baz", text: "baz", pos: 19, line: 3, column: 9>
-<type: char, value: "=", text: "=", pos: 23, line: 3, column: 13>
-<type: number, value: 1, text: "1", pos: 25, line: 3, column: 15>
-<type: id, value: "bar", text: "bar", pos: 53, line: 4, column: 9>
-<type: char, value: "{", text: "{", pos: 57, line: 4, column: 13>
-<type: id, value: "quux", text: "quux", pos: 71, line: 5, column: 13>
-<type: char, value: "=", text: "=", pos: 76, line: 5, column: 18>
-<type: number, value: 42, text: "42", pos: 78, line: 5, column: 20>
-<type: id, value: "hello", text: "hello", pos: 93, line: 6, column: 13>
-<type: char, value: "=", text: "=", pos: 99, line: 6, column: 19>
-<type: string, value: "hello \"world\"!", text: "hello \\\"world\\\"!\"", pos: 101, line: 6, column: 21>
-<type: char, value: "}", text: "}", pos: 126, line: 7, column: 9>
-<type: id, value: "quux", text: "quux", pos: 136, line: 8, column: 9>
-<type: char, value: "=", text: "=", pos: 141, line: 8, column: 14>
-<type: number, value: 7, text: "7", pos: 143, line: 8, column: 16>
-<type: char, value: "}", text: "}", pos: 149, line: 9, column: 5>
+<type: id, value: "foo", text: "foo", pos: 0, line: 1, column: 1>
+<type: char, value: "{", text: "{", pos: 4, line: 1, column: 5>
+<type: id, value: "baz", text: "baz", pos: 10, line: 2, column: 5>
+<type: char, value: "=", text: "=", pos: 14, line: 2, column: 9>
+<type: number, value: 1, text: "1", pos: 16, line: 2, column: 11>
+<type: id, value: "bar", text: "bar", pos: 40, line: 3, column: 5>
+<type: char, value: "{", text: "{", pos: 44, line: 3, column: 9>
+<type: id, value: "quux", text: "quux", pos: 54, line: 4, column: 9>
+<type: char, value: "=", text: "=", pos: 59, line: 4, column: 14>
+<type: number, value: 42, text: "42", pos: 61, line: 4, column: 16>
+<type: id, value: "hello", text: "hello", pos: 72, line: 5, column: 9>
+<type: char, value: "=", text: "=", pos: 78, line: 5, column: 15>
+<type: string, value: "hello \"world\"!", text: "\"hello \\\"world\\\"!\"", pos: 80, line: 5, column: 17>
+<type: char, value: "}", text: "}", pos: 103, line: 6, column: 5>
+<type: id, value: "quux", text: "quux", pos: 109, line: 7, column: 5>
+<type: char, value: "=", text: "=", pos: 114, line: 7, column: 10>
+<type: number, value: 7, text: "7", pos: 116, line: 7, column: 12>
+<type: char, value: "}", text: "}", pos: 118, line: 8, column: 1>
 ```
 
 With the additional help of an Abstract Syntax Tree (AST) library like
