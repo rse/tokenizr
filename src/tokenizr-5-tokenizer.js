@@ -451,7 +451,7 @@ let Tokenizr = class Tokenizr {
         for (let i = 0; i < alternatives.length; i++) {
             try {
                 this.begin()
-                result = alternatives[i]()
+                result = alternatives[i].call(this)
                 this.commit()
                 break
             } catch (ex) {
