@@ -148,7 +148,7 @@ The output of running this sample program is:
 <type: number, value: 42, text: "42", pos: 78, line: 5, column: 20>
 <type: id, value: "hello", text: "hello", pos: 93, line: 6, column: 13>
 <type: char, value: "=", text: "=", pos: 99, line: 6, column: 19>
-<type: string, value: "hello \"world\"!", text: "hello \"world\"!"", pos: 101, line: 6, column: 21>
+<type: string, value: "hello \"world\"!", text: "hello \\\"world\\\"!\"", pos: 101, line: 6, column: 21>
 <type: char, value: "}", text: "}", pos: 126, line: 7, column: 9>
 <type: id, value: "quux", text: "quux", pos: 136, line: 8, column: 9>
 <type: char, value: "=", text: "=", pos: 141, line: 8, column: 14>
