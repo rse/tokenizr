@@ -154,6 +154,7 @@ The output of running this sample program is:
 <type: char, value: "=", text: "=", pos: 114, line: 7, column: 10>
 <type: number, value: 7, text: "7", pos: 116, line: 7, column: 12>
 <type: char, value: "}", text: "}", pos: 118, line: 8, column: 1>
+<type: EOF, value: "", text: "", pos: 122, line: 9, column: 1>
 ```
 
 With the additional help of an Abstract Syntax Tree (AST) library like
