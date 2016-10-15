@@ -260,14 +260,19 @@ let Tokenizr = class Tokenizr {
 
     /*  determine and return the next token  */
     _tokenize () {
-        /*  tokenize only as long as there is input left  */
-        if (this._pos >= this._len) {
+        /*  helper function for finishing parsing  */
+        const finish = () => {
             if (!this._eof) {
                 if (this._finish !== null)
                     this._finish.call(this._ctx, this._ctx)
                 this._eof = true
                 this._pending.push(new Token("EOF", "", "", this._pos, this._line, this._column))
             }
+        }
+
+        /*  tokenize only as long as there is input left  */
+        if (this._pos >= this._len) {
+            finish()
             return
         }
 
@@ -346,8 +351,10 @@ let Tokenizr = class Tokenizr {
                         /*  ignore token  */
                         this._progress(this._pos, this._rules[i].pattern.lastIndex)
                         this._pos = this._rules[i].pattern.lastIndex
-                        if (this._pos >= this._len)
+                        if (this._pos >= this._len) {
+                            finish()
                             return
+                        }
                         continued = true
                         break
                     }
@@ -355,6 +362,8 @@ let Tokenizr = class Tokenizr {
                         /*  accept token(s)  */
                         this._progress(this._pos, this._rules[i].pattern.lastIndex)
                         this._pos = this._rules[i].pattern.lastIndex
+                        if (this._pos >= this._len)
+                            finish()
                         return
                     }
                     else
