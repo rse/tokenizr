@@ -159,7 +159,7 @@ The output of running this sample program is:
 With the additional help of an Abstract Syntax Tree (AST) library like
 [ASTy](https://github.com/rse/asty) and a query library like [ASTq](https://github.com/rse/astq)
 you can [write powerful Recursive Descent based parsers](https://github.com/rse/parsing-techniques/blob/master/cfg2kv-3-ls-rdp-ast/cfg2kv.js)
-which parse input into an AST and then process the AST.
+which parse such a token stream into an AST and then query and process the AST.
 
 Application Programming Interface (API)
 ---------------------------------------
