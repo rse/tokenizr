@@ -26,10 +26,10 @@ parser". Its distinct features are:
   Each rule can be enabled for one or more particular states only.
 
 - **Regular Expression Matching**:<br/>
-  Its tokenization is based on Regular Expressions for matching the input string.
+  Its tokenization is based on powerful Regular Expressions for matching the input string.
 
 - **Match Repeating**:<br/>
-  Rule actions can (change the state and then) force the repeating of
+  Rule actions can change the state and then force the repeating of
   the matching process from scratch at the current input position.
 
 - **Match Rejecting**:<br/>
@@ -62,8 +62,8 @@ parser". Its distinct features are:
   the attempt of parsing alternatives.
 
 - **Token Look-Ahead**:<br/>
-  The forthcoming tokens can be inspected to support alternative decisions
-  from within the parser based on look-ahead tokens.
+  The forthcoming tokens can be inspected, to support alternative decisions
+  from within the parser, based on look-ahead tokens.
 
 Installation
 ------------
@@ -171,7 +171,8 @@ This is the main API class for establishing a lexical scanner.
   Create a new tokenization instance.
 
 - Method: `Tokenizr#reset(): Tokenizr`<br/>
-  Reset the tokenization instance to a fresh one.
+  Reset the tokenization instance to a fresh one by
+  discarding all internal state information.
 
 - Method: `Tokenizr#debug(enable: Boolean): Tokenizr`<br/>
   Enable (or disable) verbose logging for debugging purposes.
@@ -185,7 +186,7 @@ This is the main API class for establishing a lexical scanner.
 
 - Method: `Tokenizr#pop(): String`<br/>
   Pop a state from the state stack.
-  The initial/first/lowest stack value cannot be popped.
+  The initial (aka first or lowest) stack value (`default`) cannot be popped.
 
 - Method: `Tokenizr#state(state: String): Tokenizr`<br/>
   Method: `Tokenizr#state(): String`<br/>
@@ -197,18 +198,23 @@ This is the main API class for establishing a lexical scanner.
   Set a tag. The tag has to be matched by rules.
 
 - Method: `Tokenizr#tagged(tag: String): Boolean`<br/>
-  Check whether a tag is set.
+  Check whether a particular tag is set.
 
 - Method: `Tokenizr#untag(tag: String): Tokenizr`<br/>
-  Unset a tag. The tag no longer has to be matched by rules.
+  Unset a particular tag. The tag no longer will be matched by rules.
 
 - Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: TokenizerContext, match: Array[String]) => Void): Tokenizr`<br/>
-  Configure a token matching rule which executes its `action` in case the
-  current tokenization state is one of the states in the comma-separated `state` (by default
-  the rule matches all states if `state` is not specified) and the
-  next input characters match against the `pattern`. The `ctx` argument provides
-  a context object for token repeating/rejecting/ignoring/accepting, the
-  `match` argument is the result of the underlying `RegExp#exec` call.
+  Configure a token matching rule which executes its `action` in case
+  the current tokenization state is one of the states (and all of the
+  currently set tags) in `state` (by default the rule matches all states
+  if `state` is not specified) and the next input characters match
+  against the `pattern`. The exact syntax of `state` is `<state>[ #<tag>
+  #<tag> ...][, <state>[ #<tag> #<tag> ...], ...]`, i.e., it is one
+  or more comma-separated state matches (OR-combined) and each state
+  match has exactly one state and zero or more space-separated tags
+  (AND-combined). The `ctx` argument provides a context object for token
+  repeating/rejecting/ignoring/accepting, the `match` argument is the
+  result of the underlying `RegExp#exec` call.
 
 - Method: `Tokenizr#token(): Tokenizr.Token`<br/>
   Get the next token from the input. Internally, the
@@ -218,36 +224,39 @@ This is the main API class for establishing a lexical scanner.
 
 - Method: `Tokenizr#tokens(): Array[Tokenizr.Token]`<br/>
   Tokenizes the entire input and returns all the corresponding tokens.
-  This is a convenience method only. Usually one takes single
-  tokens at a time.
+  This is a convenience method only. Usually one takes just single
+  tokens at a time with `Tokenizr#token()`.
+
+- Method: `Tokenizr#skip(next?: Number): Tokenizr`<br/>
+  Get and discard the `next` number of following tokens with `Tokenizr#token()`.
+
+- Method: `Tokenizr#consume(type: String, value?: String): Tokenizr`<br/>
+  Match (with `Tokenizr.Token#isA`) the next token. If it matches
+  `type` and optionally also `value`, consume it. If it does not match,
+  throw a `Tokenizr.ParsingError`. This is the primary function used in
+  Recursive Descent parsers.
 
 - Method: `Tokenizr#peek(offset?: Number): Tokenizr.Token`<br/>
   Peek at the following token at the (0-based) offset without consuming
   the token. This is the secondary function used in Recursive Descent
   parsers.
 
-- Method: `Tokenizr#skip(next?: Number): Tokenizr`<br/>
-  Consume the `next` number of following tokens.
-
-- Method: `Tokenizr#consume(type: String, value?: String): Tokenizr`<br/>
-  Match (with `Tokenizr.Token#isA`) the next token. If it matches,
-  consume it. If it does not match, throw a `Tokenizr.ParsingError`.
-  This is the primary function used in Recursive Descent parsers.
-
 - Method: `Tokenizr#begin(): Tokenizr`<br/>
-  Begin a transaction. Until `commit` or `rollback` are called, all
-  consumed tokens will be internally remembered and be either thrown
-  away (on `commit`) or pushed back (on `rollback`). This can be used
-  multiple times and supports nested transactions.
+  Begin a transaction. Until `Tokenizr#commit()` or
+  `Tokenizr#rollback()` are called, all consumed tokens will
+  be internally remembered and be either thrown away (on
+  `Tokenizr#commit()`) or pushed back (on `Tokenizr#rollback()`). This
+  can be used multiple times and this way supports nested transactions.
+  It is intended to be used for tokenizing alternatives.
 
 - Method: `Tokenizr#depth(): Number`<br/>
   Return the number of already consumed tokens in the currently
   active transaction. This is useful if multiple alternatives
   are parsed and in case all failed, to report the error for
-  the most specific, i.e., the one which consumed most tokens.
+  the most specific one, i.e., the one which consumed most tokens.
 
 - Method: `Tokenizr#commit(): Tokenizr`<br/>
-  End a transaction successfully. All consumed tokens are thrown away.
+  End a transaction successfully. All consumed tokens are finally gone.
 
 - Method: `Tokenizr#rollback(): Tokenizr`<br/>
   End a transaction unsuccessfully. All consumed tokens are pushed back
@@ -260,22 +269,25 @@ This is the main API class for establishing a lexical scanner.
   and returns a value) leads to the successful result. In case all
   alternatives failed (all throw an exception), the exception of the
   most-specific alterative (the one with the largest transaction depth)
-  is re-thrown.
+  is re-thrown. The `this` in each callback function points to the
+  `Tokenizr` object on which `alternatives` was called.
 
 - Method: `Tokenizr#error(message: String): Tokenizr.ParsingError`<br/>
-  Returns a new instance of `Tokenizr.ParsingError`, based on the
-  current input character stream position.
+  Returns a new instance of `Tokenizr.ParsingError`, based
+  on the current input character stream position, and with
+  `Tokenizr.ParsingError#message` set to `message`.
 
 ### Class `Tokenizr.Token`
 
 This is the class of all returned tokens.
 
 - Property: `Tokenizr.Token#type: String`<br/>
-  The type of the token.
+  The type of the token as specified on `Tokenizr.ActionContext#accept()`.
 
 - Property: `Tokenizr.Token#value: any`<br/>
   The value of the token. By default this is the same as
-  `Tokenizr.Token#text`, but can be any pre-processed value.
+  `Tokenizr.Token#text`, but can be any pre-processed value
+  as specified on `Tokenizr.ActionContext#accept()`.
 
 - Property: `Tokenizr.Token#text: String`<br/>
   The corresponding input text of this token.
@@ -290,11 +302,13 @@ This is the class of all returned tokens.
   The (1-based) column number in the input.
 
 - Method: `Tokenizr.Token#toString(): String`<br/>
-  Returns a formatted representation of the token.
+  Returns a formatted representation of the token,
+  usually for debugging or tracing purposes only.
 
 - Method: `Tokenizr.Token#isA(type: String, value?: any): String`<br/>
-  Checks whether token matches against a particular type and optionally
-  a particular value.
+  Checks whether token matches against a particular `type` and optionally
+  a particular `value`. This is especially used internally by
+  `Tokenizr#consume()`.
 
 ### Class `Tokenizr.ParsingError`
 
@@ -317,10 +331,11 @@ This is the class of all thrown exceptions related to parsing.
   The (1-based) column number in the input.
 
 - Property: `Tokenizr.ParsingError#input: String`<br/>
-  The input itself.
+  The total input itself.
 
 - Method: `Tokenizr.ParsingError#toString(): String`<br/>
-  Returns a formatted representation of the error.
+  Returns a formatted representation of the error,
+  usually for convenient error displaying purposes.
 
 ### Class `Tokenizr.ActionContext`
 
@@ -328,7 +343,7 @@ This is the class of all rule action contexts.
 
 - Method: `Tokenizr.ActionContext#data(key: String, value?: any): any`<br/>
   Store or retrieve any user data (indexed by `key`) to the action
-  context for sharing data between rules.
+  context for sharing data between two or more rules.
 
 - Method: `Tokenizr.ActionContext#info(): { line: number, column: number, pos: number, len: number }`<br/>
   Retrieve information about the current matching.
@@ -340,12 +355,12 @@ This is the class of all rule action contexts.
   Method: `Tokenizr.ActionContext#tag(tag: String): Tokenizr.ActionContext`<br/>
   Method: `Tokenizr.ActionContext#tagged(tag: String): Boolean`<br/>
   Method: `Tokenizr.ActionContext#untag(tag: String): Tokenizr.ActionContext`<br/>
-  Methods just passed-through to the attached Tokenizr. See above for details.
+  Methods just passed-through to the attached `Tokenizr` object. See above for details.
 
 - Method: `Tokenizr.ActionContext#repeat(): Tokenizr.ActionContext`<br/>
   Mark the tokenization process to repeat the matching at the current
   input position from scratch. You first have to switch to a different
-  state or this will lead to an endless loop, of course.
+  state with `Tokenizr.ActionContext#state()` or this will lead to an endless loop, of course!
 
 - Method: `Tokenizr.ActionContext#reject(): Tokenizr.ActionContext`<br/>
   Mark the current matching to be rejected. The tokenization process
@@ -359,7 +374,7 @@ This is the class of all rule action contexts.
   Accept the current matching and produce a token of `type` and
   optionally with a different `value` (usually a pre-processed variant
   of the matched text). This function can be called multiple times to
-  produce one or more tokens.
+  produce one or more distinct tokens in sequence.
 
 Implementation Notice
 ---------------------
