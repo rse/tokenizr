@@ -13,10 +13,11 @@ String Tokenization Library for JavaScript
 About
 -----
 
-Tokenizr is a small but flexible JavaScript library, providing string
-tokenization functionality. It is intended to be be used as the
-underlying "lexical scanner" in a Recursive Descent based "syntax
-parser". Its distinct features are:
+Tokenizr is a small JavaScript library, providing poweful and flexible
+string tokenization functionality. It is intended to be be used as
+the underlying "lexical scanner" in a Recursive Descent based "syntax
+parser", but can be used for other parsing purposes, too. Its distinct
+features are:
 
 - **Efficient Iteration**:<br/>
   It iterates over the input character string in a read-only and copy-less fashion.
