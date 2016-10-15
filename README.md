@@ -209,9 +209,9 @@ This is the main API class for establishing a lexical scanner.
   the current tokenization state is one of the states (and all of the
   currently set tags) in `state` (by default the rule matches all states
   if `state` is not specified) and the next input characters match
-  against the `pattern`. The exact syntax of `state` is `<state>[ #<tag>
-  #<tag> ...][, <state>[ #<tag> #<tag> ...], ...]`, i.e., it is one
-  or more comma-separated state matches (OR-combined) and each state
+  against the `pattern`. The exact syntax of `state` is
+  `<state>[ #<tag> #<tag> ...][, <state>[ #<tag> #<tag> ...], ...]`, i.e.,
+  it is one or more comma-separated state matches (OR-combined) and each state
   match has exactly one state and zero or more space-separated tags
   (AND-combined). The `ctx` argument provides a context object for token
   repeating/rejecting/ignoring/accepting, the `match` argument is the
