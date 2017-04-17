@@ -226,26 +226,26 @@ This is the main API class for establishing a lexical scanner.
 - Method: `Tokenizr#untag(tag: String): Tokenizr`<br/>
   Unset a particular tag. The tag no longer will be matched by rules.
 
-- Method: `Tokenizr#before(action: (ctx: TokenizerContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
+- Method: `Tokenizr#before(action: (ctx: ActionContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
   Configure a single action which is called directly before any rule
   action (configured with `Tokenizr#rule()`) is called. This can be used
   to execute a common action just before all rule actions. The `rule`
   argument is the `Tokenizr#rule()` information of the particular rule
   which is executed.
 
-- Method: `Tokenizr#after(action: (ctx: TokenizerContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
+- Method: `Tokenizr#after(action: (ctx: ActionContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
   Configure a single action which is called directly after any rule
   action (configured with `Tokenizr#rule()`) is called. This can be used
   to execute a common action just after all rule actions. The `rule`
   argument is the `Tokenizr#rule()` information of the particular rule
   which is executed.
 
-- Method: `Tokenizr#finish(action: (ctx: TokenizerContext) => Void): Tokenizr`<br/>
+- Method: `Tokenizr#finish(action: (ctx: ActionContext) => Void): Tokenizr`<br/>
   Configure a single action which is called directly before an `EOF`
   token is emitted. This can be used to execute a common action just
   after the last rule action was called.
 
-- Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: TokenizerContext, match: Array[String]) => Void): Tokenizr`<br/>
+- Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: ActionContext, match: Array[String]) => Void): Tokenizr`<br/>
   Configure a token matching rule which executes its `action` in case
   the current tokenization state is one of the states (and all of the
   currently set tags) in `state` (by default the rule matches all states
