@@ -23,7 +23,7 @@
         "grunt-contrib-clean":  "~1.1.0",
         "grunt-browserify":     "~5.0.0",
         "grunt-mocha-test":     "~0.13.2",
-        "mocha":                "~3.2.0",
+        "mocha":                "~3.3.0",
         "chai":                 "~3.5.0",
         "browserify":           "~14.3.0",
         "babelify":             "~7.3.0",
