@@ -418,6 +418,10 @@ This is the class of all rule action contexts.
   of the matched text). This function can be called multiple times to
   produce one or more distinct tokens in sequence.
 
+- Method: `Tokenizr.ActionContext#stop(): Tokenizr.ActionContext`<br/>
+  Immediately stop entire tokenization. After this the
+  `Tokenizr#token()` method immediately starts to return `null`.
+
 Implementation Notice
 ---------------------
 

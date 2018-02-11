@@ -103,7 +103,7 @@ export default class ActionContext {
         return this
     }
 
-    /*  accept current matching is a new token  */
+    /*  accept current matching as a new token  */
     accept (type, value) {
         if (arguments.length < 2)
             value = this._match[0]
@@ -112,6 +112,12 @@ export default class ActionContext {
             type, value, this._match[0],
             this._tokenizr._pos, this._tokenizr._line, this._tokenizr._column
         ))
+        return this
+    }
+
+    /*  immediately stop tokenization  */
+    stop () {
+        this._tokenizr._stopped = true
         return this
     }
 }

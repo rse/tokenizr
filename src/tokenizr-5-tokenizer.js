@@ -51,6 +51,7 @@ let Tokenizr = class Tokenizr {
         this._tag         = {}
         this._transaction = []
         this._pending     = []
+        this._stopped     = false
         this._ctx         = new ActionContext(this)
         return this
     }
@@ -270,8 +271,8 @@ let Tokenizr = class Tokenizr {
             }
         }
 
-        /*  tokenize only as long as there is input left  */
-        if (this._pos >= this._len) {
+        /*  tokenize only as long as we were not stopped and there is input left  */
+        if (this._stopped || this._pos >= this._len) {
             finish()
             return
         }
