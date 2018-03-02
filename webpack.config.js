@@ -10,15 +10,16 @@ module.exports = {
   },
   mode: true || process.env.NODE_ENV == "production" ? "production" : "development",
   module: {
-    // rules: [
-    //   {
-    //     test: /\.js$/,
-    //     exclude: /node_modules/,
-    //     loader: "babel-loader",
-    //     query: {
-    //       plugins: ["transform-object-rest-spread"]
-    //     }
-    //   }
-    // ]
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+        query: {
+          presets: ["es2015"],
+          plugins: ["transform-object-rest-spread"]
+        }
+      }
+    ]
   }
 };
