@@ -17,23 +17,30 @@
     "homepage": "https://github.com/rse/tokenizr",
     "bugs":     "https://github.com/rse/tokenizr/issues",
     "devDependencies": {
-        "grunt":                "~1.0.2",
-        "grunt-cli":            "~1.2.0",
-        "grunt-contrib-jshint": "~1.1.0",
-        "grunt-contrib-clean":  "~1.1.0",
-        "grunt-browserify":     "~5.2.0",
-        "grunt-mocha-test":     "~0.13.3",
-        "mocha":                "~5.0.1",
-        "chai":                 "~4.1.2",
-        "browserify":           "~16.1.0",
-        "babelify":             "~8.0.0",
-        "babel-core":           "~6.26.0",
-        "babel-cli":            "~6.26.0",
-        "babel-preset-env":     "~1.6.1",
-        "uglifyify":            "~4.0.5",
-        "browserify-derequire": "~0.9.4"
+        "grunt":                     "~1.0.2",
+        "grunt-cli":                 "~1.2.0",
+        "grunt-contrib-clean":       "~1.1.0",
+        "grunt-browserify":          "~5.2.0",
+        "grunt-mocha-test":          "~0.13.3",
+        "grunt-eslint":              "~20.1.0",
+        "mocha":                     "~5.0.1",
+        "chai":                      "~4.1.2",
+        "browserify":                "~16.1.0",
+        "babelify":                  "~8.0.0",
+        "babel-core":                "~6.26.0",
+        "babel-cli":                 "~6.26.0",
+        "babel-preset-env":          "~1.6.1",
+        "babel-eslint":              "~8.2.2",
+        "uglifyify":                 "~4.0.5",
+        "browserify-derequire":      "~0.9.4",
+        "eslint":                    "~4.18.2",
+        "eslint-config-standard":    "~11.0.0",
+        "eslint-plugin-standard":    "~3.0.1",
+        "eslint-plugin-promise":     "~3.6.0",
+        "eslint-plugin-import":      "~2.9.0",
+        "eslint-plugin-node":        "~6.0.1"
     },
     "scripts": {
-        "sample": "babel-node --presets es2015 smp/sample.js"
+        "sample": "babel-node --presets env smp/sample.js"
     }
 }
