@@ -405,7 +405,7 @@ class Tokenizr {
         })
 
         /*  post-process pattern  */
-        var flags = "g"
+        let flags = "g"
         if (pattern.multiline)  flags += "m"
         if (pattern.ignoreCase) flags += "i"
         pattern = new RegExp(pattern.source, flags)
