@@ -22,13 +22,190 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import excerpt       from "./tokenizr-1-excerpt"
-import Token         from "./tokenizr-2-token"
-import ParsingError  from "./tokenizr-3-error"
-import ActionContext from "./tokenizr-4-context"
+/*  utility function: create a source excerpt  */
+const excerpt = (txt, o) => {
+    var l = txt.length;
+    var b = o - 20; if (b < 0) b = 0;
+    var e = o + 20; if (e > l) e = l;
+    var hex = function (ch) {
+        return ch.charCodeAt(0).toString(16).toUpperCase();
+    };
+    var extract = function (txt, pos, len) {
+        return txt.substr(pos, len)
+            .replace(/\\/g,   "\\\\")
+            .replace(/\x08/g, "\\b")
+            .replace(/\t/g,   "\\t")
+            .replace(/\n/g,   "\\n")
+            .replace(/\f/g,   "\\f")
+            .replace(/\r/g,   "\\r")
+            .replace(/[\x00-\x07\x0B\x0E\x0F]/g, function(ch) { return "\\x0" + hex(ch); })
+            .replace(/[\x10-\x1F\x80-\xFF]/g,    function(ch) { return "\\x"  + hex(ch); })
+            .replace(/[\u0100-\u0FFF]/g,         function(ch) { return "\\u0" + hex(ch); })
+            .replace(/[\u1000-\uFFFF]/g,         function(ch) { return "\\u"  + hex(ch); });
+    }
+    return {
+        prologTrunc: b > 0,
+        prologText:  extract(txt, b, o - b),
+        tokenText:   extract(txt, o, 1),
+        epilogText:  extract(txt, o + 1, e - (o + 1)),
+        epilogTrunc: e < l
+    }
+}
+
+/*  internal helper class for token representation  */
+class Token {
+    constructor (type, value, text, pos = 0, line = 0, column = 0) {
+        this.type   = type
+        this.value  = value
+        this.text   = text
+        this.pos    = pos
+        this.line   = line
+        this.column = column
+    }
+    toString () {
+        return `<type: ${this.type}, ` +
+            `value: ${JSON.stringify(this.value)}, ` +
+            `text: ${JSON.stringify(this.text)}, ` +
+            `pos: ${this.pos}, ` +
+            `line: ${this.line}, ` +
+            `column: ${this.column}>`
+    }
+    isA (type, value) {
+        if (type !== this.type)
+            return false
+        if (arguments.length === 2 && value !== this.value)
+            return false
+        return true
+    }
+}
+
+/*  internal helper class for tokenization error reporting  */
+class ParsingError extends Error {
+    /*  construct and initialize object  */
+    constructor (message, pos, line, column, input) {
+        super(message)
+        this.name     = "ParsingError"
+        this.message  = message
+        this.pos      = pos
+        this.line     = line
+        this.column   = column
+        this.input    = input
+    }
+
+    /*  render a useful string representation  */
+    toString () {
+        let l = excerpt(this.input, this.pos)
+        let prefix1 = `line ${this.line} (column ${this.column}): `
+        let prefix2 = ""
+        for (let i = 0; i < prefix1.length + l.prologText.length; i++)
+            prefix2 += " "
+        let msg = "Parsing Error: " + this.message + "\n" +
+            prefix1 + l.prologText + l.tokenText + l.epilogText + "\n" +
+            prefix2 + "^"
+        return msg
+    }
+}
+
+/*  internal helper class for action context  */
+class ActionContext {
+    /*  construct and initialize the object  */
+    constructor (tokenizr) {
+        this._tokenizr = tokenizr
+        this._data     = {}
+        this._repeat   = false
+        this._reject   = false
+        this._ignore   = false
+        this._match    = null
+    }
+
+    /*  store and retrieve user data attached to context  */
+    data (key, value) {
+        let valueOld = this._data[key]
+        if (arguments.length === 2)
+            this._data[key] = value
+        return valueOld
+    }
+
+    /*  retrieve information of current matching  */
+    info () {
+        return {
+            line:   this._tokenizr._line,
+            column: this._tokenizr._column,
+            pos:    this._tokenizr._pos,
+            len:    this._match[0].length
+        }
+    }
+
+    /*  pass-through functions to attached tokenizer  */
+    push () {
+        this._tokenizr.push.apply(this._tokenizr, arguments)
+        return this
+    }
+    pop () {
+        return this._tokenizr.pop.apply(this._tokenizr, arguments)
+    }
+    state () {
+        if (arguments.length > 0) {
+            this._tokenizr.state.apply(this._tokenizr, arguments)
+            return this
+        }
+        else
+            return this._tokenizr.state.apply(this._tokenizr, arguments)
+    }
+    tag () {
+        this._tokenizr.tag.apply(this._tokenizr, arguments)
+        return this
+    }
+    tagged () {
+        return this._tokenizr.tagged.apply(this._tokenizr, arguments)
+    }
+    untag () {
+        this._tokenizr.untag.apply(this._tokenizr, arguments)
+        return this
+    }
+
+    /*  mark current matching to be repeated from scratch  */
+    repeat () {
+        this._tokenizr._log(`    REPEAT`)
+        this._repeat = true
+        return this
+    }
+
+    /*  mark current matching to be rejected  */
+    reject () {
+        this._tokenizr._log(`    REJECT`)
+        this._reject = true
+        return this
+    }
+
+    /*  mark current matching to be ignored  */
+    ignore () {
+        this._tokenizr._log(`    IGNORE`)
+        this._ignore = true
+        return this
+    }
+
+    /*  accept current matching as a new token  */
+    accept (type, value) {
+        if (arguments.length < 2)
+            value = this._match[0]
+        this._tokenizr._log(`    ACCEPT: type: ${type}, value: ${JSON.stringify(value)} (${typeof value}), text: "${this._match[0]}"`)
+        this._tokenizr._pending.push(new Token(
+            type, value, this._match[0],
+            this._tokenizr._pos, this._tokenizr._line, this._tokenizr._column
+        ))
+        return this
+    }
+
+    /*  immediately stop tokenization  */
+    stop () {
+        this._tokenizr._stopped = true
+        return this
+    }
+}
 
 /*  external API class  */
-let Tokenizr = class Tokenizr {
+class Tokenizr {
     /*  construct and initialize the object  */
     constructor () {
         this._before = null
