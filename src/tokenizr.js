@@ -164,21 +164,21 @@ class ActionContext {
 
     /*  mark current matching to be repeated from scratch  */
     repeat () {
-        this._tokenizr._log(`    REPEAT`)
+        this._tokenizr._log("    REPEAT")
         this._repeat = true
         return this
     }
 
     /*  mark current matching to be rejected  */
     reject () {
-        this._tokenizr._log(`    REJECT`)
+        this._tokenizr._log("    REJECT")
         this._reject = true
         return this
     }
 
     /*  mark current matching to be ignored  */
     ignore () {
-        this._tokenizr._log(`    IGNORE`)
+        this._tokenizr._log("    IGNORE")
         this._ignore = true
         return this
     }
@@ -245,6 +245,7 @@ class Tokenizr {
 
     /*  output a debug message  */
     _log (msg) {
+        /* eslint no-console: off */
         if (this._debug)
             console.log(`tokenizr: ${msg}`)
     }
@@ -271,7 +272,7 @@ class Tokenizr {
             throw new Error("parameter \"state\" not a String")
 
         /*  push new state  */
-        this._log(`    STATE (PUSH): ` +
+        this._log("    STATE (PUSH): " +
             `old: <${this._state[this._state.length - 1]}>, ` +
             `new: <${state}>`)
         this._state.push(state)
@@ -287,7 +288,7 @@ class Tokenizr {
             throw new Error("no more custom states to pop")
 
         /*  pop old state  */
-        this._log(`    STATE (POP): ` +
+        this._log("    STATE (POP): " +
             `old: <${this._state[this._state.length - 1]}>, ` +
             `new: <${this._state[this._state.length - 2]}>`)
         return this._state.pop()
@@ -301,7 +302,7 @@ class Tokenizr {
                 throw new Error("parameter \"state\" not a String")
 
             /*  change current state  */
-            this._log(`    STATE (SET): ` +
+            this._log("    STATE (SET): " +
                 `old: <${this._state[this._state.length - 1]}>, ` +
                 `new: <${state}>`)
             this._state[this._state.length - 1] = state
@@ -508,7 +509,7 @@ class Tokenizr {
                 if (   (found = this._rules[i].pattern.exec(this._input)) !== null
                     && found.index === this._pos                                  ) {
                     if (this._debug)
-                       this._log("    MATCHED: " + JSON.stringify(found))
+                        this._log("    MATCHED: " + JSON.stringify(found))
 
                     /*  pattern found, so give action a chance to operate
                         on it and act according to its results  */
@@ -592,7 +593,7 @@ class Tokenizr {
         if (typeof offset === "undefined")
             offset = 0
         for (let i = 0; i < this._pending.length + offset; i++)
-             this._tokenize()
+            this._tokenize()
         if (offset >= this._pending.length)
             throw new Error("not enough tokens available for peek operation")
         this._log(`PEEK: ${this._pending[offset].toString()}`)
@@ -604,7 +605,7 @@ class Tokenizr {
         if (typeof len === "undefined")
             len = 1
         for (let i = 0; i < this._pending.length + len; i++)
-             this._tokenize()
+            this._tokenize()
         if (len > this._pending.length)
             throw new Error("not enough tokens available for skip operation")
         while (len-- > 0)
@@ -615,15 +616,17 @@ class Tokenizr {
     /*  consume the current token (by expecting it to be a particular symbol)  */
     consume (type, value) {
         for (let i = 0; i < this._pending.length + 1; i++)
-             this._tokenize()
+            this._tokenize()
         if (this._pending.length === 0)
             throw new Error("not enough tokens available for consume operation")
         let token = this.token()
         this._log(`CONSUME: ${token.toString()}`)
         const raiseError = () => {
-            throw new ParsingError(`expected: <type: ${type}, value: ${JSON.stringify(value)} (${typeof value})>, ` +
+            throw new ParsingError(
+                `expected: <type: ${type}, value: ${JSON.stringify(value)} (${typeof value})>, ` +
                 `found: <type: ${token.type}, value: ${JSON.stringify(token.value)} (${typeof token.value})>`,
-                token.pos, token.line, token.column, this._input)
+                token.pos, token.line, token.column, this._input
+            )
         }
         if (arguments.length === 2 && !token.isA(type, value))
             raiseError(JSON.stringify(value), typeof value)
@@ -675,7 +678,8 @@ class Tokenizr {
                 result = alternatives[i].call(this)
                 this.commit()
                 break
-            } catch (ex) {
+            }
+            catch (ex) {
                 this._log(`EXCEPTION: ${ex.toString()}`)
                 depths.push({ ex: ex, depth: this.depth() })
                 this.rollback()
