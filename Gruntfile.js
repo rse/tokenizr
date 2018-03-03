@@ -44,7 +44,15 @@ module.exports = function (grunt) {
                 },
                 options: {
                     transform: [
-                        [ "babelify", { presets: [ "es2015" ] } ],
+                        [ "babelify", {
+                            presets: [
+                                [ "env", {
+                                    "targets": {
+                                        "browser": [ "last 2 versions" ]
+                                    }
+                                } ]
+                            ]
+                        } ],
                         [ "uglifyify", { sourceMap: false, global: true } ]
                     ],
                     plugin: [
