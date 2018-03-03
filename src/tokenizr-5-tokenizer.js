@@ -520,5 +520,5 @@ Tokenizr.ParsingError  = ParsingError
 Tokenizr.ActionContext = ActionContext
 
 /*  export the API class  */
-export default Tokenizr
+module.exports = Tokenizr
 
