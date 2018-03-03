@@ -439,18 +439,15 @@ let Tokenizr = class Tokenizr {
             throw new Error("not enough tokens available for consume operation")
         let token = this.token()
         this._log(`CONSUME: ${token.toString()}`)
-        if (arguments.length === 2) {
-            if (!token.isA(type, value))
-                throw new ParsingError(`expected: <type: ${type}, value: ${JSON.stringify(value)} (${typeof value})>, ` +
-                    `found: <type: ${token.type}, value: ${JSON.stringify(token.value)} (${typeof token.value})>`,
-                    token.pos, token.line, token.column, this._input)
+        const raiseError = () => {
+            throw new ParsingError(`expected: <type: ${type}, value: ${JSON.stringify(value)} (${typeof value})>, ` +
+                `found: <type: ${token.type}, value: ${JSON.stringify(token.value)} (${typeof token.value})>`,
+                token.pos, token.line, token.column, this._input)
         }
-        else {
-            if (!token.isA(type))
-                throw new ParsingError(`expected: <type: ${type}, value: * (any)>, ` +
-                    `found: <type: ${token.type}, value: ${JSON.stringify(token.value)} (${typeof token.value})>`,
-                    token.pos, token.line, token.column, this._input)
-        }
+        if (arguments.length === 2 && !token.isA(type, value))
+            raiseError(JSON.stringify(value), typeof value)
+        else if (!token.isA(type))
+            raiseError("*", "any")
         return token
     }
 
