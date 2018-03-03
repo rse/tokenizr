@@ -135,30 +135,30 @@ class ActionContext {
     }
 
     /*  pass-through functions to attached tokenizer  */
-    push () {
-        this._tokenizr.push.apply(this._tokenizr, arguments)
+    push (...args) {
+        this._tokenizr.push(...args)
         return this
     }
-    pop () {
-        return this._tokenizr.pop.apply(this._tokenizr, arguments)
+    pop (...args) {
+        return this._tokenizr.pop(...args)
     }
-    state () {
-        if (arguments.length > 0) {
-            this._tokenizr.state.apply(this._tokenizr, arguments)
+    state (...args) {
+        if (args.length > 0) {
+            this._tokenizr.state(...args)
             return this
         }
         else
-            return this._tokenizr.state.apply(this._tokenizr, arguments)
+            return this._tokenizr.state(...args)
     }
-    tag () {
-        this._tokenizr.tag.apply(this._tokenizr, arguments)
+    tag (...args) {
+        this._tokenizr.tag(...args)
         return this
     }
-    tagged () {
-        return this._tokenizr.tagged.apply(this._tokenizr, arguments)
+    tagged (...args) {
+        return this._tokenizr.tagged(...args)
     }
-    untag () {
-        this._tokenizr.untag.apply(this._tokenizr, arguments)
+    untag (...args) {
+        this._tokenizr.untag(...args)
         return this
     }
 
@@ -187,7 +187,8 @@ class ActionContext {
     accept (type, value) {
         if (arguments.length < 2)
             value = this._match[0]
-        this._tokenizr._log(`    ACCEPT: type: ${type}, value: ${JSON.stringify(value)} (${typeof value}), text: "${this._match[0]}"`)
+        this._tokenizr._log(`    ACCEPT: type: ${type}, value: ` +
+            `${JSON.stringify(value)} (${typeof value}), text: "${this._match[0]}"`)
         this._tokenizr._pending.push(new Token(
             type, value, this._match[0],
             this._tokenizr._pos, this._tokenizr._line, this._tokenizr._column
@@ -229,6 +230,11 @@ class Tokenizr {
         this._stopped     = false
         this._ctx         = new ActionContext(this)
         return this
+    }
+
+    /*  create an error message for the current position  */
+    error (message) {
+        return new ParsingError(message, this._pos, this._line, this._column, this._input)
     }
 
     /*  configure debug operation  */
@@ -681,11 +687,6 @@ class Tokenizr {
             throw depths[0].ex
         }
         return result
-    }
-
-    /*  create an error message for the current position  */
-    error (message) {
-        return new ParsingError(message, this._pos, this._line, this._column, this._input)
     }
 }
 
