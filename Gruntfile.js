@@ -46,8 +46,7 @@ module.exports = function (grunt) {
                     transform: [ [ "babelify", { presets: [ "es2015" ] } ] ],
                     plugin: [
                         [ "minifyify" ],
-                        [ "browserify-derequire" ],
-                        [ "browserify-header" ]
+                        [ "browserify-derequire" ]
                     ],
                     browserifyOptions: {
                         standalone: "Tokenizr",
