@@ -22,7 +22,6 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import Tokenizr from "./tokenizr-5-tokenizer"
+import { BasicTokenizr } from "./tokenizr-5-tokenizer";
 
-module.exports = Tokenizr
-
+export { BasicTokenizr };

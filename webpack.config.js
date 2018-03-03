@@ -6,7 +6,8 @@ module.exports = {
   },
   output: {
     filename: "[name]-bundle.js",
-    path: path.resolve(__dirname, "dist")
+    path: path.resolve(__dirname, "dist"),
+    libraryTarget: "commonjs" //temporary
   },
   mode: true || process.env.NODE_ENV == "production" ? "production" : "development",
   module: {

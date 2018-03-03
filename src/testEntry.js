@@ -1,3 +1,3 @@
-import Tokenizer from "./tokenizr";
+import BasicTokenizr from "./tokenizrBasic";
 
-export default Tokenizer;
+export default BasicTokenizr;

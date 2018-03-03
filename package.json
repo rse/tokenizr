@@ -2,12 +2,7 @@
   "name": "tokenizr",
   "version": "1.2.1",
   "description": "String Tokenization Library for JavaScript",
-  "keywords": [
-    "string",
-    "token",
-    "scanner",
-    "lexer"
-  ],
+  "keywords": ["string", "token", "scanner", "lexer"],
   "main": "lib/tokenizr.js",
   "repository": {
     "type": "git",
@@ -46,5 +41,6 @@
   "scripts": {
     "sample": "babel-node --presets es2015 smp/sample.js",
     "webpack": "webpack"
-  }
+  },
+  "sideEffects": false
 }
