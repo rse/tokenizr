@@ -41,6 +41,8 @@
         "eslint-plugin-node":        "6.0.1"
     },
     "scripts": {
-        "sample": "babel-node --presets env smp/sample.js"
+        "prepublishOnly":  "grunt default",
+        "build":           "grunt default",
+        "sample":          "babel-node --presets env smp/sample.js"
     }
 }
