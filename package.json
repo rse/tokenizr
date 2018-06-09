@@ -1,6 +1,6 @@
 {
     "name":        "tokenizr",
-    "version":     "1.3.6",
+    "version":     "1.3.7",
     "description": "String Tokenization Library for JavaScript",
     "keywords":    [ "string", "token", "scanner", "lexer" ],
     "main":        "lib/tokenizr.js",
