@@ -30,15 +30,15 @@
         "babel-core":                "6.26.3",
         "babel-cli":                 "6.26.0",
         "babel-preset-env":          "1.7.0",
-        "babel-eslint":              "8.2.5",
+        "babel-eslint":              "8.2.6",
         "uglifyify":                 "5.0.1",
         "browserify-derequire":      "0.9.6",
-        "eslint":                    "5.0.1",
+        "eslint":                    "5.3.0",
         "eslint-config-standard":    "11.0.0",
         "eslint-plugin-standard":    "3.1.0",
         "eslint-plugin-promise":     "3.8.0",
         "eslint-plugin-import":      "2.13.0",
-        "eslint-plugin-node":        "6.0.1"
+        "eslint-plugin-node":        "7.0.1"
     },
     "scripts": {
         "prepublishOnly":  "grunt default",
