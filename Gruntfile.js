@@ -46,9 +46,9 @@ module.exports = function (grunt) {
                     transform: [
                         [ "babelify", {
                             presets: [
-                                [ "env", {
+                                [ "@babel/preset-env", {
                                     "targets": {
-                                        "browser": [ "last 2 versions" ]
+                                        "browsers": "last 2 versions, > 1%, ie 11"
                                     }
                                 } ]
                             ]
