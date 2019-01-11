@@ -409,7 +409,7 @@ class Tokenizr {
         let flags = "g"
         if (pattern.multiline)  flags += "m"
         if (pattern.ignoreCase) flags += "i"
-        if (pattern.unicode) flags += "u"
+        if (pattern.unicode)    flags += "u"
         pattern = new RegExp(pattern.source, flags)
 
         /*  store rule  */
