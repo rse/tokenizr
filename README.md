@@ -422,6 +422,15 @@ This is the class of all rule action contexts.
   Immediately stop entire tokenization. After this the
   `Tokenizr#token()` method immediately starts to return `null`.
 
+RegExp Flag Support
+-------------------
+
+The `pattern` passed to `Tokenizr.{before,after,rule}()` has to be a
+regular JavaScript `RegExp` objects. Internally, Tokenizr creates a copy
+of this object by skipping its `g` (global) and `y` (sticky) flags and
+taking over its `m` (multiline), `s` (dotAll), `i` (ignoreCase), and `u`
+(unicode) flags.
+
 Implementation Notice
 ---------------------
 
