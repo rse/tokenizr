@@ -406,10 +406,19 @@ class Tokenizr {
         })
 
         /*  post-process pattern  */
-        let flags = "g"
-        if (pattern.multiline)  flags += "m"
-        if (pattern.ignoreCase) flags += "i"
-        if (pattern.unicode)    flags += "u"
+        let flags = "g"     /* ECMAScript <= 5 */
+        try {
+            let regexp = new RegExp("", "y")
+            if (typeof regexp.sticky === "boolean")
+                flags = "y" /* ECMAScript >= 2015 */
+        }
+        catch (ex) {
+            /*  no-op  */
+        }
+        if (typeof pattern.multiline  === "boolean" && pattern.multiline)  flags += "m"
+        if (typeof pattern.dotAll     === "boolean" && pattern.dotAll)     flags += "s"
+        if (typeof pattern.ignoreCase === "boolean" && pattern.ignoreCase) flags += "i"
+        if (typeof pattern.unicode    === "boolean" && pattern.unicode)    flags += "u"
         pattern = new RegExp(pattern.source, flags)
 
         /*  store rule  */

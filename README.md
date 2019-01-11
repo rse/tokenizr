@@ -425,15 +425,14 @@ This is the class of all rule action contexts.
 Implementation Notice
 ---------------------
 
-Although Tokenizr is written in ECMAScript 6, it is transpiled to ECMAScript
-5 and this way runs in really all(!) current (as of 2015) JavaScript
-environments, of course.
+Although Tokenizr is written in ECMAScript 6, it is transpiled to
+ECMAScript 5 and this way runs in really all(!) current (as of 2015)
+JavaScript environments, of course.
 
 Internally, Tokenizr scans the input string in a read-only fashion
-by leveraging `RegExp`'s `g` (global) flag in combination with the
-`lastIndex` field, the best one can do on ECMAScript 5 runtime.
-For ECMAScript 6 runtimes we will switch to `RegExp`'s new `y` (sticky)
-flag in the future as it is even more efficient.
+by leveraging `RegExp`'s `g` flag (global, for ECMAScript <= 5
+environments) or `y` flag (sticky, for ECMAScript >= 2015 environments)
+in combination with `RegExp`'s `lastIndex` field.
 
 License
 -------
