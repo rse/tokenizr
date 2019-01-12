@@ -450,9 +450,13 @@ The following alternatives are known:
 
 - [moo](https://github.com/no-context/moo):
   A very powerful tokenizer/lexer. It provides nearly the same
-  functionality than Tokenizr and hence is a strong competitor. In
-  addition, it compiles all regular expressions into a single one and
-  hence is one of the fastest tokenizers/lexers.
+  functionality than Tokenizr. In addition, it compiles all regular
+  expressions into a single one and hence is one of the fastest
+  tokenizers/lexers.
+
+- [flex-js](https://github.com/sormy/flex-js)
+  A medium powerful tokenizer/lexer. It provides nearly the same
+  functionality than Tokenizr.
 
 - [lex](https://github.com/aaditmshah/lexer):
   A tokenizer/lexer, modeled after the popular C solution Flex. This
