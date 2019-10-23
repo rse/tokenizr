@@ -24,10 +24,10 @@
 
 /*  utility function: create a source excerpt  */
 const excerpt = (txt, o) => {
-    let l = txt.length
+    const l = txt.length
     let b = o - 20; if (b < 0) b = 0
     let e = o + 20; if (e > l) e = l
-    let hex = (ch) =>
+    const hex = (ch) =>
         ch.charCodeAt(0).toString(16).toUpperCase()
     const extract = (txt, pos, len) =>
         txt.substr(pos, len)
@@ -92,12 +92,12 @@ class ParsingError extends Error {
 
     /*  render a useful string representation  */
     toString () {
-        let l = excerpt(this.input, this.pos)
-        let prefix1 = `line ${this.line} (column ${this.column}): `
+        const l = excerpt(this.input, this.pos)
+        const prefix1 = `line ${this.line} (column ${this.column}): `
         let prefix2 = ""
         for (let i = 0; i < prefix1.length + l.prologText.length; i++)
             prefix2 += " "
-        let msg = "Parsing Error: " + this.message + "\n" +
+        const msg = "Parsing Error: " + this.message + "\n" +
             prefix1 + l.prologText + l.tokenText + l.epilogText + "\n" +
             prefix2 + "^"
         return msg
@@ -118,7 +118,7 @@ class ActionContext {
 
     /*  store and retrieve user data attached to context  */
     data (key, value) {
-        let valueOld = this._data[key]
+        const valueOld = this._data[key]
         if (arguments.length === 2)
             this._data[key] = value
         return valueOld
@@ -396,9 +396,9 @@ class Tokenizr {
 
         /*  post-process state  */
         state = state.split(/\s*,\s*/g).map((entry) => {
-            let items  = entry.split(/\s+/g)
-            let states = items.filter((item) => item.match(/^#/) === null)
-            let tags   = items.filter((item) => item.match(/^#/) !== null)
+            const items  = entry.split(/\s+/g)
+            const states = items.filter((item) => item.match(/^#/) === null)
+            const tags   = items.filter((item) => item.match(/^#/) !== null)
                 .map((tag) => tag.replace(/^#/, ""))
             if (states.length !== 1)
                 throw new Error("exactly one state required")
@@ -408,7 +408,7 @@ class Tokenizr {
         /*  post-process pattern  */
         let flags = "g"     /* ECMAScript <= 5 */
         try {
-            let regexp = new RegExp("", "y")
+            const regexp = new RegExp("", "y")
             if (typeof regexp.sticky === "boolean")
                 flags = "y" /* ECMAScript >= 2015 */
         }
@@ -430,11 +430,11 @@ class Tokenizr {
 
     /*  progress the line/column counter  */
     _progress (from, until) {
-        let line   = this._line
-        let column = this._column
-        let s = this._input
+        const line   = this._line
+        const column = this._column
+        const s = this._input
         for (let i = from; i < until; i++) {
-            let c = s.charAt(i)
+            const c = s.charAt(i)
             if (c === "\r")
                 this._column = 1
             else if (c === "\n") {
@@ -476,8 +476,8 @@ class Tokenizr {
 
             /*  some optional debugging context  */
             if (this._debug) {
-                let e = excerpt(this._input, this._pos)
-                let tags = Object.keys(this._tag).map((tag) => `#${tag}`).join(" ")
+                const e = excerpt(this._input, this._pos)
+                const tags = Object.keys(this._tag).map((tag) => `#${tag}`).join(" ")
                 this._log(`INPUT: state: <${this._state[this._state.length - 1]}>, tags: <${tags}>, text: ` +
                     (e.prologTrunc ? "..." : "\"") + `${e.prologText}<${e.tokenText}>${e.epilogText}` +
                     (e.epilogTrunc ? "..." : "\"") + `, at: <line ${this._line}, column ${this._column}>`)
@@ -486,7 +486,7 @@ class Tokenizr {
             /*  iterate over all rules...  */
             for (let i = 0; i < this._rules.length; i++) {
                 if (this._debug) {
-                    let state = this._rules[i].state.map((item) => {
+                    const state = this._rules[i].state.map((item) => {
                         let output = item.state
                         if (item.tags.length > 0)
                             output += " " + item.tags.map((tag) => `#${tag}`).join(" ")
@@ -498,7 +498,7 @@ class Tokenizr {
 
                 /*  one of rule's states (and all of its tags) has to match  */
                 let matches = false
-                let states = this._rules[i].state.map((item) => item.state)
+                const states = this._rules[i].state.map((item) => item.state)
                 let idx = states.indexOf("*")
                 if (idx < 0)
                     idx = states.indexOf(this._state[this._state.length - 1])
@@ -578,7 +578,7 @@ class Tokenizr {
 
         /*  return now potentially pending token  */
         if (this._pending.length > 0) {
-            let token = this._pending.shift()
+            const token = this._pending.shift()
             if (this._transaction.length > 0)
                 this._transaction[0].push(token)
             this._log(`TOKEN: ${token.toString()}`)
@@ -591,7 +591,7 @@ class Tokenizr {
 
     /*  determine and return all tokens  */
     tokens () {
-        let result = []
+        const result = []
         let token
         while ((token = this.token()) !== null)
             result.push(token)
@@ -629,7 +629,7 @@ class Tokenizr {
             this._tokenize()
         if (this._pending.length === 0)
             throw new Error("not enough tokens available for consume operation")
-        let token = this.token()
+        const token = this.token()
         this._log(`CONSUME: ${token.toString()}`)
         const raiseError = () => {
             throw new ParsingError(
