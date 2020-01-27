@@ -23,13 +23,13 @@
         "grunt-browserify":          "5.3.0",
         "grunt-mocha-test":          "0.13.3",
         "grunt-eslint":              "22.0.0",
-        "mocha":                     "6.2.2",
+        "mocha":                     "7.0.1",
         "chai":                      "4.2.0",
         "browserify":                "16.5.0",
         "babelify":                  "10.0.0",
-        "@babel/core":               "7.7.7",
-        "@babel/cli":                "7.7.7",
-        "@babel/preset-env":         "7.7.7",
+        "@babel/core":               "7.8.3",
+        "@babel/cli":                "7.8.3",
+        "@babel/preset-env":         "7.8.3",
         "babel-eslint":              "10.0.3",
         "uglifyify":                 "5.0.2",
         "browserify-derequire":      "1.0.1",
@@ -37,8 +37,8 @@
         "eslint-config-standard":    "14.1.0",
         "eslint-plugin-standard":    "4.0.1",
         "eslint-plugin-promise":     "4.2.1",
-        "eslint-plugin-import":      "2.19.1",
-        "eslint-plugin-node":        "10.0.0"
+        "eslint-plugin-import":      "2.20.0",
+        "eslint-plugin-node":        "11.0.0"
     },
     "scripts": {
         "prepublishOnly":  "grunt default",
