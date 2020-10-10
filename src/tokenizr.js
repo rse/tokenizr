@@ -663,7 +663,14 @@ class Tokenizr {
     commit () {
         if (this._transaction.length === 0)
             throw new Error("cannot commit transaction -- no active transaction")
-        this._transaction.shift()
+
+        /*  remove current transaction  */
+        const committed = this._transaction.shift()
+
+        /*  in case we were a nested transaction, still remember the tokens  */
+        if (this._transaction.length > 0)
+            this._transaction[0] = this._transaction[0].concat(committed)
+
         this._log(`COMMIT: level ${this._transaction.length}`)
         return this
     }
@@ -672,8 +679,13 @@ class Tokenizr {
     rollback () {
         if (this._transaction.length === 0)
             throw new Error("cannot rollback transaction -- no active transaction")
-        this._pending = this._transaction[0].concat(this._pending)
-        this._transaction.shift()
+
+        /*  remove current transaction  */
+        const rolledback = this._transaction.shift()
+
+        /*  make the tokens available again, as new pending tokens  */
+        this._pending = rolledback.concat(this._pending)
+
         this._log(`ROLLBACK: level ${this._transaction.length}`)
         return this
     }
