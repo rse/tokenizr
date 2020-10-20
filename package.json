@@ -4,7 +4,7 @@
     "description": "String Tokenization Library for JavaScript",
     "keywords":    [ "string", "token", "scanner", "lexer" ],
     "main":        "lib/tokenizr.js",
-    "types":       "lib/tokenizr.d.ts",
+    "types":       "src/tokenizr.d.ts",
     "repository": {
         "type": "git",
         "url":  "https://github.com/rse/tokenizr.git"
