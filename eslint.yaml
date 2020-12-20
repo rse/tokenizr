@@ -66,4 +66,5 @@ rules:
     array-bracket-spacing:               off
     quote-props:                         off
     lines-between-class-members:         off
+    prefer-regex-literals:               off
 
