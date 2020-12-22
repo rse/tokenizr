@@ -46,7 +46,7 @@ describe("Tokenizr Library", function () {
         tokenizr.rule("default", /[0-9]+/, function (ctx, m) {
             ctx.accept("number", parseInt(m[0]))
         })
-        tokenizr.rule("default", /"((?:\\\"|[^\r\n]+)+)"/, function (ctx, m) {
+        tokenizr.rule("default", /"((?:\\\"|[^\r\n]+)*)"/, function (ctx, m) {
             ctx.accept("string", m[1].replace(/\\"/g, "\""))
         })
         tokenizr.rule("default", /\/\*/, function (ctx /*, m */) {
