@@ -30,7 +30,7 @@ export class Token {
     pos: number
     line: number
     column: number
-    toString(): string
+    toString(colorize?: (type: string, value: string) => string): string
     isA(type: string, value?: any): boolean
 }
 

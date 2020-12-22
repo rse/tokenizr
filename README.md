@@ -343,9 +343,10 @@ This is the class of all returned tokens.
 - Property: `Tokenizr.Token#column: Number`<br/>
   The (1-based) column number in the input.
 
-- Method: `Tokenizr.Token#toString(): String`<br/>
+- Method: `Tokenizr.Token#toString(colorize?: (type: String, value: String) => String): String`<br/>
   Returns a formatted representation of the token,
   usually for debugging or tracing purposes only.
+  The optional `colorize` callback can be used to colorize the output.
 
 - Method: `Tokenizr.Token#isA(type: String, value?: any): String`<br/>
   Checks whether token matches against a particular `type` and optionally

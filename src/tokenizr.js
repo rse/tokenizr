@@ -60,13 +60,13 @@ class Token {
         this.line   = line
         this.column = column
     }
-    toString () {
-        return `<type: ${this.type}, ` +
-            `value: ${JSON.stringify(this.value)}, ` +
-            `text: ${JSON.stringify(this.text)}, ` +
-            `pos: ${this.pos}, ` +
-            `line: ${this.line}, ` +
-            `column: ${this.column}>`
+    toString (colorize = (type, text) => text) {
+        return `${colorize("type", this.type)} ` +
+            `(value: ${colorize("value", JSON.stringify(this.value))}, ` +
+            `text: ${colorize("text", JSON.stringify(this.text))}, ` +
+            `pos: ${colorize("pos", this.pos)}, ` +
+            `line: ${colorize("line", this.line)}, ` +
+            `column: ${colorize("column", this.column)})`
     }
     isA (type, value) {
         if (type !== this.type)
