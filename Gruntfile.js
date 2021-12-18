@@ -28,22 +28,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-browserify")
     grunt.loadNpmTasks("grunt-mocha-test")
     grunt.loadNpmTasks("grunt-eslint")
-    grunt.loadNpmTasks("grunt-tslint")
     grunt.initConfig({
         eslint: {
             options: {
-                configFile: "eslint.yaml"
+                overrideConfigFile: "eslint.yaml"
             },
             "gruntfile": [ "Gruntfile.js" ],
             "tokenizr": [ "src/**/*.js" ]
-        },
-        tslint: {
-            "tokenizr": {
-                options: {
-                    configuration: "tslint.json"
-                },
-                src: "./src/*.ts"
-            }
         },
         browserify: {
             "tokenizr": {
@@ -87,6 +78,6 @@ module.exports = function (grunt) {
             distclean: [ "node_modules" ]
         }
     })
-    grunt.registerTask("default", [ "eslint", "tslint", "browserify", "mochaTest" ])
+    grunt.registerTask("default", [ "eslint", "browserify", "mochaTest" ])
 }
 
