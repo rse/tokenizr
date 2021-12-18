@@ -97,8 +97,8 @@ export default class Tokenizr {
     before(action: Action): this
     after(action: Action): this
     finish(action: (this: ActionContext, ctx: ActionContext) => void): this
-    rule(state: string, pattern: RegExp, action: (this: ActionContext, ctx: ActionContext, match: string[]) => void, name?: string): this
-    rule(pattern: RegExp, action: (this: ActionContext, ctx: ActionContext, match: string[]) => void, name?: string): this
+    rule(state: string, pattern: RegExp, action: (this: ActionContext, ctx: ActionContext, match: RegExpExecArray) => void, name?: string): this
+    rule(pattern: RegExp, action: (this: ActionContext, ctx: ActionContext, match: RegExpExecArray) => void, name?: string): this
     token(): Token
     tokens(): Token[]
     peek(offset?: number): Token
