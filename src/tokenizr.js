@@ -402,7 +402,7 @@ class Tokenizr {
                 .map((tag) => tag.replace(/^#/, ""))
             if (states.length !== 1)
                 throw new Error("exactly one state required")
-            return { state: states[0], tags: tags }
+            return { state: states[0], tags }
         })
 
         /*  post-process pattern  */
@@ -703,7 +703,7 @@ class Tokenizr {
             }
             catch (ex) {
                 this._log(`EXCEPTION: ${ex.toString()}`)
-                depths.push({ ex: ex, depth: this.depth() })
+                depths.push({ ex, depth: this.depth() })
                 this.rollback()
                 continue
             }
