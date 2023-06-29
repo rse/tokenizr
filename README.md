@@ -245,8 +245,8 @@ This is the main API class for establishing a lexical scanner.
   token is emitted. This can be used to execute a common action just
   after the last rule action was called.
 
-- Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: ActionContext, match: Array[String]) => Void): Tokenizr`<br/>
-  Configure a token matching rule which executes its `action` in case
+- Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: ActionContext, match: Array[String]) => Void, name: String): Tokenizr`<br/>
+  Configure a token matching rule named `name`, which executes its `action` in case
   the current tokenization state is one of the states (and all of the
   currently set tags) in `state` (by default the rule matches all states
   if `state` is not specified) and the next input characters match
