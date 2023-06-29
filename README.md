@@ -272,7 +272,7 @@ This is the main API class for establishing a lexical scanner.
 - Method: `Tokenizr#skip(next?: Number): Tokenizr`<br/>
   Get and discard the `next` number of following tokens with `Tokenizr#token()`.
 
-- Method: `Tokenizr#consume(type: String, value?: String): Tokenizr`<br/>
+- Method: `Tokenizr#consume(type: String, value?: String): Tokenizr.Token`<br/>
   Match (with `Tokenizr.Token#isA`) the next token. If it matches
   `type` and optionally also `value`, consume it. If it does not match,
   throw a `Tokenizr.ParsingError`. This is the primary function used in
