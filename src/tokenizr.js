@@ -602,7 +602,7 @@ class Tokenizr {
     peek (offset) {
         if (typeof offset === "undefined")
             offset = 0
-        for (let i = 0; i < this._pending.length + offset; i++)
+        for (let i = -1; i < this._pending.length + offset; i++)
             this._tokenize()
         if (offset >= this._pending.length)
             throw new Error("not enough tokens available for peek operation")

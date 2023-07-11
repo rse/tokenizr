@@ -38,6 +38,7 @@ describe("Tokenizr Library", function () {
         expect(tokenizr).to.respondTo("rule")
         expect(tokenizr).to.respondTo("token")
     })
+
     it("should have the expected functionality", function () {
         var tokenizr = new Tokenizr()
         tokenizr.rule("default", /[a-zA-Z]+/, function (ctx /*, m */) {
@@ -91,6 +92,32 @@ describe("Tokenizr Library", function () {
             .equal({ type: "string", value: "bar baz", text: "\"bar baz\"", pos: 8, line: 2, column: 2 })
         expect(tokens[3]).to.be.a("object").and.to.be.deep
             .equal({ type: "symbol", value: "quux", text: "quux", pos: 20, line: 3, column: 2 })
+    })
+
+    it("should peek on a fresh input", function () {
+        var tokenizr = new Tokenizr()
+        tokenizr.rule("default", /[a-zA-Z]+/, function (ctx /*, m */) {
+            ctx.accept("symbol")
+        })
+
+        tokenizr.input('foo')
+        expect(tokenizr.peek(1).type).to.equal('EOF')
+        expect(() => tokenizr.peek(2)).to.throw()
+        expect(tokenizr.peek().type).to.equal('symbol')
+        expect(tokenizr.token().type).to.equal('symbol')
+        expect(tokenizr.peek().type).to.equal('EOF')
+        expect(tokenizr.token().type).to.equal('EOF')
+    })
+
+    it("should not peek past EOF", function() {
+        var tokenizr = new Tokenizr()
+        tokenizr.rule("default", /[a-zA-Z]+/, function (ctx /*, m */) {
+            ctx.accept("symbol")
+        })
+
+        tokenizr.input('')
+        expect(tokenizr.token().type).to.equal('EOF')
+        expect(() => tokenizr.peek()).to.throw()
     })
 })
 
