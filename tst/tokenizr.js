@@ -101,8 +101,12 @@ describe("Tokenizr Library", function () {
         })
 
         tokenizr.input('foo')
+        expect(tokenizr.peek(1).type).to.equal('EOF')
+        expect(() => tokenizr.peek(2)).to.throw()
         expect(tokenizr.peek().type).to.equal('symbol')
         expect(tokenizr.token().type).to.equal('symbol')
+        expect(tokenizr.peek().type).to.equal('EOF')
+        expect(tokenizr.token().type).to.equal('EOF')
     })
 
     it("should not peek past EOF", function() {
