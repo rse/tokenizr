@@ -451,7 +451,7 @@ class Tokenizr {
             `to: <line ${this._line}, column ${this._column}>`)
     }
 
-    /*  determine and return the next token  */
+    /*  determine and provide the next token  */
     _tokenize () {
         /*  helper function for finishing parsing  */
         const finish = () => {
@@ -602,8 +602,14 @@ class Tokenizr {
     peek (offset) {
         if (typeof offset === "undefined")
             offset = 0
-        for (let i = 0; i < this._pending.length + offset; i++)
-            this._tokenize()
+
+        /*  if no more tokens are pending, try to determine new ones  */
+        if (offset >= this._pending.length) {
+            if (this._pending.length === 0)
+                this._tokenize()
+            for (let i = 0; i < offset - this._pending.length; i++)
+                this._tokenize()
+        }
         if (offset >= this._pending.length)
             throw new Error("not enough tokens available for peek operation")
         this._log(`PEEK: ${this._pending[offset].toString()}`)
