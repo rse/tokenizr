@@ -7,7 +7,7 @@
     "types":       "src/tokenizr.d.ts",
     "repository": {
         "type": "git",
-        "url":  "https://github.com/rse/tokenizr.git"
+        "url":  "git+https://github.com/rse/tokenizr.git"
     },
     "author": {
         "name":  "Dr. Ralf S. Engelschall",
