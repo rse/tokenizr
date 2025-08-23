@@ -19,20 +19,20 @@
     "bugs":     "https://github.com/rse/tokenizr/issues",
     "devDependencies": {
         "grunt":                     "1.6.1",
-        "grunt-cli":                 "1.4.3",
+        "grunt-cli":                 "1.5.0",
         "grunt-contrib-clean":       "2.0.1",
         "grunt-browserify":          "6.0.0",
         "grunt-mocha-test":          "0.13.3",
         "grunt-eslint":              "24.3.0",
-        "typescript":                "5.4.2",
-        "mocha":                     "10.3.0",
-        "chai":                      "4.4.1",
-        "browserify":                "17.0.0",
+        "typescript":                "5.9.2",
+        "mocha":                     "11.7.1",
+        "chai":                      "6.0.1",
+        "browserify":                "17.0.1",
         "babelify":                  "10.0.0",
-        "@babel/core":               "7.24.0",
-        "@babel/cli":                "7.23.9",
-        "@babel/node":               "7.23.9",
-        "@babel/preset-env":         "7.24.0",
+        "@babel/core":               "7.28.3",
+        "@babel/cli":                "7.28.3",
+        "@babel/node":               "7.28.0",
+        "@babel/preset-env":         "7.28.3",
         "uglifyify":                 "5.0.2",
         "browserify-derequire":      "1.1.1",
         "eslint":                    "8.57.0",
@@ -45,5 +45,6 @@
         "prepublishOnly":  "grunt default",
         "build":           "grunt default",
         "sample":          "babel-node --presets @babel/preset-env smp/sample.js"
-    }
+    },
+    "upd": [ "!eslint*", "grunt-eslint" ]
 }
