@@ -600,6 +600,8 @@ class Tokenizr {
     peek (offset) {
         if (typeof offset === "undefined")
             offset = 0
+        if (typeof offset !== "number" || offset < 0)
+            throw new Error("parameter \"offset\" not a positive Number")
 
         /*  if no more tokens are pending, try to determine new ones  */
         if (offset >= this._pending.length) {
