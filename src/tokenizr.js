@@ -620,7 +620,7 @@ class Tokenizr {
     skip (len) {
         if (typeof len === "undefined")
             len = 1
-        for (let i = 0; i < this._pending.length + len; i++)
+        for (let i = 0; i < len; i++)
             this._tokenize()
         if (len > this._pending.length)
             throw new Error("not enough tokens available for skip operation")
