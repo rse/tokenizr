@@ -512,9 +512,8 @@ class Tokenizr {
 
                 /*  match pattern at the last position  */
                 this._rules[i].pattern.lastIndex = this._pos
-                let found = this._rules[i].pattern.exec(this._input)
-                this._rules[i].pattern.lastIndex = this._pos
-                if (   (found = this._rules[i].pattern.exec(this._input)) !== null
+                const found = this._rules[i].pattern.exec(this._input)
+                if (   found !== null
                     && found.index === this._pos                                  ) {
                     if (this._debug)
                         this._log("    MATCHED: " + JSON.stringify(found))
