@@ -25,7 +25,7 @@
 /* global global: false */
 
 /*  provide exception swallowing  */
-global.swallow = function (thrower) { try { thrower(); } catch (e) {} };
+global.swallow = function (thrower) { try { thrower(); } catch (e) { /* intentionally ignored */ } };
 
 /*  provide assertion functionality (base features)  */
 global.chai    = require("chai");
