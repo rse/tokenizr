@@ -12,24 +12,24 @@ interface ExcerptResult {
     epilogText:  string
     epilogTrunc: boolean
 }
+const hex = (ch: string) =>
+    ch.charCodeAt(0).toString(16).toUpperCase()
 const excerpt = (txt: string, o: number): ExcerptResult => {
     const l = txt.length
     let b = o - 20; if (b < 0) b = 0
     let e = o + 20; if (e > l) e = l
-    const hex = (ch: string) =>
-        ch.charCodeAt(0).toString(16).toUpperCase()
     const extract = (txt: string, pos: number, len: number) =>
         txt.substring(pos, pos + len)
-            .replace(/\\/g,   "\\\\")
-            .replace(/\x08/g, "\\b")
-            .replace(/\t/g,   "\\t")
-            .replace(/\n/g,   "\\n")
-            .replace(/\f/g,   "\\f")
-            .replace(/\r/g,   "\\r")
-            .replace(/[\x00-\x07\x0B\x0E\x0F]/g, (ch) => "\\x0" + hex(ch))
-            .replace(/[\x10-\x1F\x80-\xFF]/g,    (ch) => "\\x"  + hex(ch))
-            .replace(/[\u0100-\u0FFF]/g,         (ch) => "\\u0" + hex(ch))
-            .replace(/[\u1000-\uFFFF]/g,         (ch) => "\\u"  + hex(ch))
+            .replaceAll(/\\/g,   "\\\\")
+            .replaceAll(/\x08/g, "\\b")
+            .replaceAll(/\t/g,   "\\t")
+            .replaceAll(/\n/g,   "\\n")
+            .replaceAll(/\f/g,   "\\f")
+            .replaceAll(/\r/g,   "\\r")
+            .replaceAll(/[\x00-\x07\x0B\x0E\x0F]/g, (ch) => "\\x0" + hex(ch))
+            .replaceAll(/[\x10-\x1F\x80-\xFF]/g,    (ch) => "\\x"  + hex(ch))
+            .replaceAll(/[\u0100-\u0FFF]/g,         (ch) => "\\u0" + hex(ch))
+            .replaceAll(/[\u1000-\uFFFF]/g,         (ch) => "\\u"  + hex(ch))
     return {
         prologTrunc: b > 0,
         prologText:  extract(txt, b, o - b),
@@ -119,7 +119,7 @@ export interface TokenInfo {
 }
 class ActionContext {
     private _tokenizr: Tokenizr
-    private _data:     { [key: string]: any }
+    private _data:     { [ key: string ]: any }
     public  _repeat:   boolean
     public  _reject:   boolean
     public  _ignore:   boolean
@@ -168,8 +168,7 @@ class ActionContext {
             this._tokenizr.state(state!)
             return this
         }
-        else
-            return this._tokenizr.state()
+        return this._tokenizr.state()
     }
     tag (tag: string) {
         this._tokenizr.tag(tag)
@@ -322,7 +321,7 @@ export default class Tokenizr {
     /*  output a debug message  */
     _log (msg: string) {
         /* eslint no-console: off */
-        /* eslint-disable no-console */
+        /* oxlint-disable no-console */
         if (this._debug)
             console.log(`tokenizr: ${msg}`)
     }
@@ -389,8 +388,7 @@ export default class Tokenizr {
         }
         else if (arguments.length === 0)
             return this._state[this._state.length - 1]
-        else
-            throw new Error("invalid number of arguments")
+        throw new Error("invalid number of arguments")
     }
 
     /*  set a tag  */
@@ -454,7 +452,7 @@ export default class Tokenizr {
     /*  configure a tokenization rule  */
     rule (state: string, pattern: RegExp, action: RuleAction, name?: string): this
     rule (pattern: RegExp, action: RuleAction, name?: string): this
-    rule (state: string | RegExp, pattern?: RegExp | RuleAction, action?: RuleAction | string, name: string = "unknown"): this {
+    rule (state: string | RegExp, pattern?: RegExp | RuleAction, action?: RuleAction | string, name = "unknown"): this {
         /*  support optional states  */
         if (arguments.length === 2 && typeof pattern === "function") {
             [ pattern, action ] = [ state as RegExp, pattern as RuleAction ]
@@ -677,7 +675,7 @@ export default class Tokenizr {
 
     /*  peek at the next token or token at particular offset  */
     peek (offset?: number) {
-        if (typeof offset === "undefined")
+        if (offset === undefined)
             offset = 0
         if (typeof offset !== "number" || offset < 0)
             throw new Error("parameter \"offset\" not a positive Number")
@@ -696,7 +694,7 @@ export default class Tokenizr {
 
     /*  skip one or more tokens  */
     skip (len?: number) {
-        if (typeof len === "undefined")
+        if (len === undefined)
             len = 1
         for (let i = 0; i < len; i++)
             this._tokenize()
