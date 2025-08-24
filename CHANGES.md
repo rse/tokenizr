@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+2.0.1 (2023-08-25)
+------------------
+
+- CLEANUP: make OxLint more happy by additional code cleanups
+
 2.0.0 (2023-08-24)
 ------------------
 
