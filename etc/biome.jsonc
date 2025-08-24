@@ -1,0 +1,49 @@
+/*
+**  Tokenizr -- String Tokenization Library
+**  Copyright (c) 2015-2025 Dr. Ralf S. Engelschall <rse@engelschall.com>
+**  Licensed under MIT license <https://spdx.org/licenses/MIT>
+*/
+
+{
+    "root": false,
+    "formatter": {
+        "enabled": false
+    },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "off"
+            }
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "style": {
+                "noNonNullAssertion": "off",
+                "useImportType": "off",
+                "noParameterAssign": "off",
+                "noUselessElse": "off",
+                "useExponentiationOperator": "off",
+                "useTemplate": "off"
+            },
+            "complexity": {
+                "noStaticOnlyClass": "off",
+                "noForEach": "off",
+                "noArguments": "off",
+                "useRegexLiterals": "off"
+            },
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noAssignInExpressions": "off",
+                "noControlCharactersInRegex": "off"
+            },
+            "correctness": {
+                "useValidTypeof": "off",
+                "noUnusedFunctionParameters": "off",
+                "noUnusedVariables": "off"
+            }
+        }
+    }
+}
+

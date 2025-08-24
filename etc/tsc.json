@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "outDir":                  "../dst",
+        "target":                  "es2022",
+        "module":                  "ESNext",
+        "moduleResolution":        "Bundler",
+        "useDefineForClassFields": false,
+        "composite":               false,
+        "strict":                  true,
+        "strictFunctionTypes":     true,
+        "resolveJsonModule":       false,
+        "isolatedModules":         false,
+        "esModuleInterop":         false,
+        "lib":                     [ "es2022", "dom" ],
+        "skipLibCheck":            false,
+        "declaration":             true,
+        "noEmit":                  false,
+        "types":                   [ "mocha" ],
+        "rootDir":                 "../src"
+    },
+    "include": [
+        "../src/**/*.ts",
+        "../src/**/*.d.ts",
+        "../package.json"
+    ],
+    "exclude": [
+        "../node_modules"
+    ]
+}

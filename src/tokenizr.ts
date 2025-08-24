@@ -1,36 +1,25 @@
 /*
 **  Tokenizr -- String Tokenization Library
 **  Copyright (c) 2015-2025 Dr. Ralf S. Engelschall <rse@engelschall.com>
-**
-**  Permission is hereby granted, free of charge, to any person obtaining
-**  a copy of this software and associated documentation files (the
-**  "Software"), to deal in the Software without restriction, including
-**  without limitation the rights to use, copy, modify, merge, publish,
-**  distribute, sublicense, and/or sell copies of the Software, and to
-**  permit persons to whom the Software is furnished to do so, subject to
-**  the following conditions:
-**
-**  The above copyright notice and this permission notice shall be included
-**  in all copies or substantial portions of the Software.
-**
-**  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-**  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-**  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-**  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-**  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-**  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-**  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+**  Licensed under MIT license <https://spdx.org/licenses/MIT>
 */
 
 /*  utility function: create a source excerpt  */
-const excerpt = (txt, o) => {
+interface ExcerptResult {
+    prologTrunc: boolean
+    prologText:  string
+    tokenText:   string
+    epilogText:  string
+    epilogTrunc: boolean
+}
+const excerpt = (txt: string, o: number): ExcerptResult => {
     const l = txt.length
     let b = o - 20; if (b < 0) b = 0
     let e = o + 20; if (e > l) e = l
-    const hex = (ch) =>
+    const hex = (ch: string) =>
         ch.charCodeAt(0).toString(16).toUpperCase()
-    const extract = (txt, pos, len) =>
-        txt.substr(pos, len)
+    const extract = (txt: string, pos: number, len: number) =>
+        txt.substring(pos, pos + len)
             .replace(/\\/g,   "\\\\")
             .replace(/\x08/g, "\\b")
             .replace(/\t/g,   "\\t")
@@ -50,9 +39,17 @@ const excerpt = (txt, o) => {
     }
 }
 
-/*  internal helper class for token representation  */
+/*  helper class for token representation  */
 class Token {
-    constructor (type, value, text, pos = 0, line = 0, column = 0) {
+    public type:   string
+    public value:  any
+    public text:   string
+    public pos:    number
+    public line:   number
+    public column: number
+
+    /*  construct and initialize object  */
+    constructor (type: string, value: any, text: string, pos = 0, line = 0, column = 0) {
         this.type   = type
         this.value  = value
         this.text   = text
@@ -60,27 +57,38 @@ class Token {
         this.line   = line
         this.column = column
     }
-    toString (colorize = (type, text) => text) {
+
+    /*  render a useful string representation  */
+    toString (colorize = (type: string, text: string) => text) {
         return `${colorize("type", this.type)} ` +
             `(value: ${colorize("value", JSON.stringify(this.value))}, ` +
             `text: ${colorize("text", JSON.stringify(this.text))}, ` +
-            `pos: ${colorize("pos", this.pos)}, ` +
-            `line: ${colorize("line", this.line)}, ` +
-            `column: ${colorize("column", this.column)})`
+            `pos: ${colorize("pos", this.pos.toString())}, ` +
+            `line: ${colorize("line", this.line.toString())}, ` +
+            `column: ${colorize("column", this.column.toString())})`
     }
-    isA (type, value) {
+
+    /*  check whether value is a Token  */
+    isA (type: string, value?: any) {
         if (type !== this.type)
             return false
-        if (arguments.length === 2 && value !== this.value)
+        if (value !== undefined && value !== this.value)
             return false
         return true
     }
 }
 
-/*  internal helper class for tokenization error reporting  */
+/*  helper class for tokenization error reporting  */
 class ParsingError extends Error {
+    public name:    string
+    public message: string
+    public pos:     number
+    public line:    number
+    public column:  number
+    public input:   string
+
     /*  construct and initialize object  */
-    constructor (message, pos, line, column, input) {
+    constructor (message: string, pos: number, line: number, column: number, input: string) {
         super(message)
         this.name     = "ParsingError"
         this.message  = message
@@ -102,10 +110,23 @@ class ParsingError extends Error {
     }
 }
 
-/*  internal helper class for action context  */
+/*  helper class for action context  */
+export interface TokenInfo {
+    line:        number
+    column:      number
+    pos:         number
+    len:         number
+}
 class ActionContext {
+    private _tokenizr: Tokenizr
+    private _data:     { [key: string]: any }
+    public  _repeat:   boolean
+    public  _reject:   boolean
+    public  _ignore:   boolean
+    public  _match:    RegExpExecArray | null
+
     /*  construct and initialize the object  */
-    constructor (tokenizr) {
+    constructor (tokenizr: Tokenizr) {
         this._tokenizr = tokenizr
         this._data     = {}
         this._repeat   = false
@@ -115,7 +136,7 @@ class ActionContext {
     }
 
     /*  store and retrieve user data attached to context  */
-    data (key, value) {
+    data (key: string, value?: any) {
         const valueOld = this._data[key]
         if (arguments.length === 2)
             this._data[key] = value
@@ -123,40 +144,42 @@ class ActionContext {
     }
 
     /*  retrieve information of current matching  */
-    info () {
+    info (): TokenInfo {
         return {
             line:   this._tokenizr._line,
             column: this._tokenizr._column,
             pos:    this._tokenizr._pos,
-            len:    this._match[0].length
-        }
+            len:    this._match?.[0]?.length ?? 0
+        } satisfies TokenInfo
     }
 
     /*  pass-through functions to attached tokenizer  */
-    push (...args) {
-        this._tokenizr.push(...args)
+    push (state: string) {
+        this._tokenizr.push(state)
         return this
     }
-    pop (...args) {
-        return this._tokenizr.pop(...args)
+    pop () {
+        return this._tokenizr.pop()
     }
-    state (...args) {
-        if (args.length > 0) {
-            this._tokenizr.state(...args)
+    state (): string
+    state (state: string): this
+    state (state?: string): this | string {
+        if (state !== undefined) {
+            this._tokenizr.state(state!)
             return this
         }
         else
-            return this._tokenizr.state(...args)
+            return this._tokenizr.state()
     }
-    tag (...args) {
-        this._tokenizr.tag(...args)
+    tag (tag: string) {
+        this._tokenizr.tag(tag)
         return this
     }
-    tagged (...args) {
-        return this._tokenizr.tagged(...args)
+    tagged (tag: string) {
+        return this._tokenizr.tagged(tag)
     }
-    untag (...args) {
-        this._tokenizr.untag(...args)
+    untag (tag: string) {
+        this._tokenizr.untag(tag)
         return this
     }
 
@@ -182,35 +205,90 @@ class ActionContext {
     }
 
     /*  accept current matching as a new token  */
-    accept (type, value) {
-        if (arguments.length < 2)
-            value = this._match[0]
+    accept (type: string, value?: any) {
+        value = value ?? this._match?.[0]
         this._tokenizr._log(`    ACCEPT: type: ${type}, value: ` +
-            `${JSON.stringify(value)} (${typeof value}), text: "${this._match[0]}"`)
+            `${JSON.stringify(value)} (${typeof value}), text: "${this._match?.[0] ?? ""}"`)
         this._tokenizr._pending.push(new Token(
-            type, value, this._match[0],
+            type, value, this._match?.[0] ?? "",
             this._tokenizr._pos, this._tokenizr._line, this._tokenizr._column
         ))
         return this
     }
 
     /*  immediately stop tokenization  */
-    stop () {
+    stop (): this {
         this._tokenizr._stopped = true
         return this
     }
 }
 
 /*  external API class  */
-class Tokenizr {
+export interface RuleState {
+    state:       string
+    tags:        string[]
+}
+export type RuleAction = (
+    this:        ActionContext,
+    ctx:         ActionContext,
+    found:       RegExpExecArray
+) => void
+export interface Rule {
+    state:       RuleState[]
+    pattern:     RegExp
+    action:      RuleAction
+    name:        string
+}
+export type BeforeAfterAction = (
+    this:        ActionContext,
+    ctx:         ActionContext,
+    match:       RegExpExecArray,
+    rule:        Rule
+) => void
+export type FinishAction = (
+    this:        ActionContext,
+    ctx:         ActionContext
+) => void
+export default class Tokenizr {
+    private _before:      BeforeAfterAction | null
+    private _after:       BeforeAfterAction | null
+    private _finish:      FinishAction | null
+    private _rules:       Rule[]
+    private _debug:       boolean
+    private _input:       string
+    private _len:         number
+    private _eof:         boolean
+    public  _pos:         number
+    public  _line:        number
+    public  _column:      number
+    private _state:       string[]
+    private _tag:         { [key: string]: boolean }
+    private _transaction: Token[][]
+    public  _pending:     Token[]
+    public  _stopped:     boolean
+    private _ctx:         ActionContext
+
     /*  construct and initialize the object  */
     constructor () {
-        this._before = null
-        this._after  = null
-        this._finish = null
-        this._rules  = []
-        this._debug  = false
-        this.reset()
+        this._before      = null
+        this._after       = null
+        this._finish      = null
+        this._rules       = []
+        this._debug       = false
+
+        /*  inlined reset  */
+        this._input       = ""
+        this._len         = 0
+        this._eof         = false
+        this._pos         = 0
+        this._line        = 1
+        this._column      = 1
+        this._state       = [ "default" ]
+        this._tag         = {}
+        this._transaction = []
+        this._pending     = []
+        this._stopped     = false
+        this._ctx         = new ActionContext(this)
     }
 
     /*  reset the internal state  */
@@ -231,25 +309,25 @@ class Tokenizr {
     }
 
     /*  create an error message for the current position  */
-    error (message) {
+    error (message: string) {
         return new ParsingError(message, this._pos, this._line, this._column, this._input)
     }
 
     /*  configure debug operation  */
-    debug (debug) {
+    debug (debug: boolean) {
         this._debug = debug
         return this
     }
 
     /*  output a debug message  */
-    _log (msg) {
+    _log (msg: string) {
         /* eslint no-console: off */
         if (this._debug)
             console.log(`tokenizr: ${msg}`)
     }
 
     /*  provide (new) input string to tokenize  */
-    input (input) {
+    input (input: string) {
         /*  sanity check arguments  */
         if (typeof input !== "string")
             throw new Error("parameter \"input\" not a String")
@@ -262,7 +340,7 @@ class Tokenizr {
     }
 
     /*  push state  */
-    push (state) {
+    push (state: string) {
         /*  sanity check arguments  */
         if (arguments.length !== 1)
             throw new Error("invalid number of arguments")
@@ -289,11 +367,13 @@ class Tokenizr {
         this._log("    STATE (POP): " +
             `old: <${this._state[this._state.length - 1]}>, ` +
             `new: <${this._state[this._state.length - 2]}>`)
-        return this._state.pop()
+        return this._state.pop()!
     }
 
     /*  get/set state  */
-    state (state) {
+    state (): string
+    state (state: string): this
+    state (state?: string): this | string {
         if (arguments.length === 1) {
             /*  sanity check arguments  */
             if (typeof state !== "string")
@@ -313,7 +393,7 @@ class Tokenizr {
     }
 
     /*  set a tag  */
-    tag (tag) {
+    tag (tag: string) {
         /*  sanity check arguments  */
         if (arguments.length !== 1)
             throw new Error("invalid number of arguments")
@@ -327,7 +407,7 @@ class Tokenizr {
     }
 
     /*  check whether tag is set  */
-    tagged (tag) {
+    tagged (tag: string) {
         /*  sanity check arguments  */
         if (arguments.length !== 1)
             throw new Error("invalid number of arguments")
@@ -339,7 +419,7 @@ class Tokenizr {
     }
 
     /*  unset a tag  */
-    untag (tag) {
+    untag (tag: string) {
         /*  sanity check arguments  */
         if (arguments.length !== 1)
             throw new Error("invalid number of arguments")
@@ -353,32 +433,34 @@ class Tokenizr {
     }
 
     /*  configure a tokenization before-rule callback  */
-    before (action) {
+    before (action: BeforeAfterAction) {
         this._before = action
         return this
     }
 
     /*  configure a tokenization after-rule callback  */
-    after (action) {
+    after (action: BeforeAfterAction) {
         this._after = action
         return this
     }
 
     /*  configure a tokenization finish callback  */
-    finish (action) {
+    finish (action: FinishAction) {
         this._finish = action
         return this
     }
 
     /*  configure a tokenization rule  */
-    rule (state, pattern, action, name = "unknown") {
+    rule (state: string, pattern: RegExp, action: RuleAction, name?: string): this
+    rule (pattern: RegExp, action: RuleAction, name?: string): this
+    rule (state: string | RegExp, pattern?: RegExp | RuleAction, action?: RuleAction | string, name: string = "unknown"): this {
         /*  support optional states  */
         if (arguments.length === 2 && typeof pattern === "function") {
-            [ pattern, action ] = [ state, pattern ]
+            [ pattern, action ] = [ state as RegExp, pattern as RuleAction ]
             state = "*"
         }
         else if (arguments.length === 3 && typeof pattern === "function") {
-            [ pattern, action, name ] = [ state, pattern, action ]
+            [ pattern, action, name ] = [ state as RegExp, pattern as RuleAction, action as string ]
             state = "*"
         }
 
@@ -393,11 +475,11 @@ class Tokenizr {
             throw new Error("parameter \"name\" not a String")
 
         /*  post-process state  */
-        state = state.split(/\s*,\s*/g).map((entry) => {
+        const parsedState = state.split(/\s*,\s*/g).map((entry: string) => {
             const items  = entry.split(/\s+/g)
-            const states = items.filter((item) => item.match(/^#/) === null)
-            const tags   = items.filter((item) => item.match(/^#/) !== null)
-                .map((tag) => tag.replace(/^#/, ""))
+            const states = items.filter((item: string) => item.match(/^#/) === null)
+            const tags   = items.filter((item: string) => item.match(/^#/) !== null)
+                .map((tag: string) => tag.replace(/^#/, ""))
             if (states.length !== 1)
                 throw new Error("exactly one state required")
             return { state: states[0], tags }
@@ -417,17 +499,17 @@ class Tokenizr {
         if (typeof pattern.dotAll     === "boolean" && pattern.dotAll)     flags += "s"
         if (typeof pattern.ignoreCase === "boolean" && pattern.ignoreCase) flags += "i"
         if (typeof pattern.unicode    === "boolean" && pattern.unicode)    flags += "u"
-        pattern = new RegExp(pattern.source, flags)
+        const processedPattern = new RegExp(pattern.source, flags)
 
         /*  store rule  */
-        this._log(`rule: configure rule (state: ${state}, pattern: ${pattern.source})`)
-        this._rules.push({ state, pattern, action, name })
+        this._log(`rule: configure rule (state: ${state}, pattern: ${processedPattern.source})`)
+        this._rules.push({ state: parsedState, pattern: processedPattern, action, name })
 
         return this
     }
 
     /*  progress the line/column counter  */
-    _progress (from, until) {
+    _progress (from: number, until: number) {
         const line   = this._line
         const column = this._column
         const s = this._input
@@ -475,7 +557,7 @@ class Tokenizr {
             /*  some optional debugging context  */
             if (this._debug) {
                 const e = excerpt(this._input, this._pos)
-                const tags = Object.keys(this._tag).map((tag) => `#${tag}`).join(" ")
+                const tags = Object.keys(this._tag).map((tag: string) => `#${tag}`).join(" ")
                 this._log(`INPUT: state: <${this._state[this._state.length - 1]}>, tags: <${tags}>, text: ` +
                     (e.prologTrunc ? "..." : "\"") + `${e.prologText}<${e.tokenText}>${e.epilogText}` +
                     (e.epilogTrunc ? "..." : "\"") + `, at: <line ${this._line}, column ${this._column}>`)
@@ -484,10 +566,10 @@ class Tokenizr {
             /*  iterate over all rules...  */
             for (let i = 0; i < this._rules.length; i++) {
                 if (this._debug) {
-                    const state = this._rules[i].state.map((item) => {
+                    const state = this._rules[i].state.map((item: RuleState) => {
                         let output = item.state
                         if (item.tags.length > 0)
-                            output += " " + item.tags.map((tag) => `#${tag}`).join(" ")
+                            output += " " + item.tags.map((tag: string) => `#${tag}`).join(" ")
                         return output
                     }).join(", ")
                     this._log(`  RULE: state(s): <${state}>, ` +
@@ -496,16 +578,13 @@ class Tokenizr {
 
                 /*  one of rule's states (and all of its tags) has to match  */
                 let matches = false
-                const states = this._rules[i].state.map((item) => item.state)
+                const states = this._rules[i].state.map((item: RuleState) => item.state)
                 let idx = states.indexOf("*")
                 if (idx < 0)
                     idx = states.indexOf(this._state[this._state.length - 1])
                 if (idx >= 0) {
-                    matches = true
-                    let tags = this._rules[i].state[idx].tags
-                    tags = tags.filter((tag) => !this._tag[tag])
-                    if (tags.length > 0)
-                        matches = false
+                    const requiredTags = this._rules[i].state[idx].tags
+                    matches = requiredTags.every((tag: string) => this._tag[tag])
                 }
                 if (!matches)
                     continue
@@ -568,14 +647,14 @@ class Tokenizr {
     }
 
     /*  determine and return next token  */
-    token () {
+    token (): Token | null {
         /*  if no more tokens are pending, try to determine a new one  */
         if (this._pending.length === 0)
             this._tokenize()
 
         /*  return now potentially pending token  */
         if (this._pending.length > 0) {
-            const token = this._pending.shift()
+            const token = this._pending.shift()!
             if (this._transaction.length > 0)
                 this._transaction[0].push(token)
             this._log(`TOKEN: ${token.toString()}`)
@@ -588,26 +667,25 @@ class Tokenizr {
 
     /*  determine and return all tokens  */
     tokens () {
-        const result = []
-        let token
+        const result: Token[] = []
+        let token: Token | null
         while ((token = this.token()) !== null)
             result.push(token)
         return result
     }
 
     /*  peek at the next token or token at particular offset  */
-    peek (offset) {
+    peek (offset?: number) {
         if (typeof offset === "undefined")
             offset = 0
         if (typeof offset !== "number" || offset < 0)
             throw new Error("parameter \"offset\" not a positive Number")
 
         /*  if no more tokens are pending, try to determine new ones  */
-        if (offset >= this._pending.length) {
+        while (offset >= this._pending.length) {
+            this._tokenize()
             if (this._pending.length === 0)
-                this._tokenize()
-            for (let i = 0; i < offset - this._pending.length; i++)
-                this._tokenize()
+                break
         }
         if (offset >= this._pending.length)
             throw new Error("not enough tokens available for peek operation")
@@ -616,7 +694,7 @@ class Tokenizr {
     }
 
     /*  skip one or more tokens  */
-    skip (len) {
+    skip (len?: number) {
         if (typeof len === "undefined")
             len = 1
         for (let i = 0; i < len; i++)
@@ -629,12 +707,12 @@ class Tokenizr {
     }
 
     /*  consume the current token (by expecting it to be a particular symbol)  */
-    consume (type, value) {
+    consume (type: string, value?: any) {
         for (let i = 0; i < this._pending.length + 1; i++)
             this._tokenize()
         if (this._pending.length === 0)
             throw new Error("not enough tokens available for consume operation")
-        const token = this.token()
+        const token = this.token()!
         this._log(`CONSUME: ${token.toString()}`)
         const raiseError = () => {
             throw new ParsingError(
@@ -644,9 +722,9 @@ class Tokenizr {
             )
         }
         if (arguments.length === 2 && !token.isA(type, value))
-            raiseError(JSON.stringify(value), typeof value)
+            raiseError()
         else if (!token.isA(type))
-            raiseError("*", "any")
+            raiseError()
         return token
     }
 
@@ -670,7 +748,7 @@ class Tokenizr {
             throw new Error("cannot commit transaction -- no active transaction")
 
         /*  remove current transaction  */
-        const committed = this._transaction.shift()
+        const committed = this._transaction.shift()!
 
         /*  in case we were a nested transaction, still remember the tokens  */
         if (this._transaction.length > 0)
@@ -686,7 +764,7 @@ class Tokenizr {
             throw new Error("cannot rollback transaction -- no active transaction")
 
         /*  remove current transaction  */
-        const rolledback = this._transaction.shift()
+        const rolledback = this._transaction.shift()!
 
         /*  make the tokens available again, as new pending tokens  */
         this._pending = rolledback.concat(this._pending)
@@ -696,9 +774,9 @@ class Tokenizr {
     }
 
     /*  execute multiple alternative callbacks  */
-    alternatives (...alternatives) {
-        let result = null
-        let depths = []
+    alternatives (...alternatives: ((this: Tokenizr) => any)[]) {
+        let result: any = null
+        let depths: { ex: Error, depth: number }[] = []
         for (let i = 0; i < alternatives.length; i++) {
             try {
                 this.begin()
@@ -707,8 +785,14 @@ class Tokenizr {
                 break
             }
             catch (ex) {
-                this._log(`EXCEPTION: ${ex.toString()}`)
-                depths.push({ ex, depth: this.depth() })
+                if (ex instanceof Error) {
+                    this._log(`EXCEPTION: ${ex.message}`)
+                    depths.push({ ex, depth: this.depth() })
+                }
+                else {
+                    this._log("EXCEPTION: alternative failed")
+                    depths.push({ ex: new Error("alternative failed"), depth: this.depth() })
+                }
                 this.rollback()
                 continue
             }
@@ -719,13 +803,9 @@ class Tokenizr {
         }
         return result
     }
+
+    /*  expose the utility classes, too  */
+    static readonly Token         = Token
+    static readonly ParsingError  = ParsingError
+    static readonly ActionContext = ActionContext
 }
-
-/*  expose the utility classes, too  */
-Tokenizr.Token         = Token
-Tokenizr.ParsingError  = ParsingError
-Tokenizr.ActionContext = ActionContext
-
-/*  export the API class  */
-module.exports = Tokenizr
-

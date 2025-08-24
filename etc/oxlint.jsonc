@@ -1,0 +1,60 @@
+/*
+**  Tokenizr -- String Tokenization Library
+**  Copyright (c) 2015-2025 Dr. Ralf S. Engelschall <rse@engelschall.com>
+**  Licensed under MIT license <https://spdx.org/licenses/MIT>
+*/
+
+{
+    "plugins": [
+        "typescript",
+        "unicorn",
+        "import",
+        "promise",
+        "node",
+        "oxc"
+    ],
+    "categories": {
+        "correctness": "error",
+        "suspicious":  "warn",
+        "pedantic":    "warn",
+        "perf":        "warn",
+        "style":       "warn",
+        "restriction": "warn"
+    },
+    "rules": {
+        "no-unused-vars":                 "off",
+        "no-unnecessary-type-constraint": "off",
+        "no-extraneous-class":            "off",
+        "no-named-as-default-member":     "off",
+        "ban-types":                      "off",
+        "max-classes-per-file":           "off",
+        "max-lines-per-function":         "off",
+        "curly":                          "off",
+        "id-length":                      "off",
+        "no-namespace":                   "off",
+        "func-style":                     "off",
+        "init-declarations":              "off",
+        "max-lines":                      "off",
+        "no-bitwise":                     "off",
+        "no-magic-numbers":               "off",
+        "no-plusplus":                    "off",
+        "no-minusminus":                  "off",
+        "no-ternary":                     "off",
+        "prefer-code-point":              "off",
+        "prefer-math-trunc":              "off",
+        "sort-keys":                      "off",
+        "sort-imports":                   "off",
+        "exports-last":                   "off",
+        "group-exports":                  "off",
+        "no-undefined":                   "off",
+        "consistent-type-definitions":    "off",
+        "numeric-separators-style":       "off",
+        "unicorn/prefer-spread":          "off",
+        "explicit-function-return-type":  "off",
+        "no-empty-function":              "off",
+        "no-empty-object-type":           "off",
+        "no-explicit-any":                "off",
+        "no-optional-chaining":           "off"
+    }
+}
+

@@ -2,7 +2,7 @@
 Tokenizr
 ========
 
-Flexible String Tokenization Library for JavaScript
+Flexible String Tokenization Library for TypeScript/JavaScript
 
 <p/>
 <img src="https://nodei.co/npm/tokenizr.png?downloads=true&stars=true" alt=""/>
@@ -13,11 +13,11 @@ Flexible String Tokenization Library for JavaScript
 About
 -----
 
-Tokenizr is a small JavaScript library, providing powerful and flexible
-string tokenization functionality. It is intended to be be used as
-the underlying "lexical scanner" in a Recursive Descent based "syntax
-parser", but can be used for other parsing purposes, too. Its distinct
-features are:
+Tokenizr is a small TypeScript/JavaScript library, providing powerful
+and flexible string tokenization functionality. It is intended to be be
+used as the underlying "lexical scanner" in a Recursive Descent based
+"syntax parser", but can be used for other parsing purposes, too. Its
+distinct features are:
 
 - **Efficient Iteration**:<br/>
   It iterates over the input character string in a read-only and copy-less fashion.
@@ -97,7 +97,7 @@ foo {
 }
 ```
 
-Then we can write a lexical scanner in ECMAScript 6 (under Node.js) for the tokens like this:
+Then we can write a lexical scanner in TypeScript/JavaScript (under Node.js) for the tokens like this:
 
 ```js
 import fs       from "fs"
@@ -136,25 +136,25 @@ lexer.tokens().forEach((token) => {
 The output of running this sample program is:
 
 ```
-<type: id, value: "foo", text: "foo", pos: 0, line: 1, column: 1>
-<type: char, value: "{", text: "{", pos: 4, line: 1, column: 5>
-<type: id, value: "baz", text: "baz", pos: 10, line: 2, column: 5>
-<type: char, value: "=", text: "=", pos: 14, line: 2, column: 9>
-<type: number, value: 1, text: "1", pos: 16, line: 2, column: 11>
-<type: id, value: "bar", text: "bar", pos: 40, line: 3, column: 5>
-<type: char, value: "{", text: "{", pos: 44, line: 3, column: 9>
-<type: id, value: "quux", text: "quux", pos: 54, line: 4, column: 9>
-<type: char, value: "=", text: "=", pos: 59, line: 4, column: 14>
-<type: number, value: 42, text: "42", pos: 61, line: 4, column: 16>
-<type: id, value: "hello", text: "hello", pos: 72, line: 5, column: 9>
-<type: char, value: "=", text: "=", pos: 78, line: 5, column: 15>
-<type: string, value: "hello \"world\"!", text: "\"hello \\\"world\\\"!\"", pos: 80, line: 5, column: 17>
-<type: char, value: "}", text: "}", pos: 103, line: 6, column: 5>
-<type: id, value: "quux", text: "quux", pos: 109, line: 7, column: 5>
-<type: char, value: "=", text: "=", pos: 114, line: 7, column: 10>
-<type: number, value: 7, text: "7", pos: 116, line: 7, column: 12>
-<type: char, value: "}", text: "}", pos: 118, line: 8, column: 1>
-<type: EOF, value: "", text: "", pos: 122, line: 9, column: 1>
+id (value: "foo", text: "foo", pos: 0, line: 1, column: 1)
+char (value: "{", text: "{", pos: 4, line: 1, column: 5)
+id (value: "baz", text: "baz", pos: 10, line: 2, column: 5)
+char (value: "=", text: "=", pos: 14, line: 2, column: 9)
+number (value: 1, text: "1", pos: 16, line: 2, column: 11)
+id (value: "bar", text: "bar", pos: 40, line: 3, column: 5)
+char (value: "{", text: "{", pos: 44, line: 3, column: 9)
+id (value: "quux", text: "quux", pos: 54, line: 4, column: 9)
+char (value: "=", text: "=", pos: 59, line: 4, column: 14)
+number (value: 42, text: "42", pos: 61, line: 4, column: 16)
+id (value: "hello", text: "hello", pos: 72, line: 5, column: 9)
+char (value: "=", text: "=", pos: 78, line: 5, column: 15)
+string (value: "hello \"world\"!", text: "\"hello \\\"world\\\"!\"", pos: 80, line: 5, column: 17)
+char (value: "}", text: "}", pos: 103, line: 6, column: 5)
+id (value: "quux", text: "quux", pos: 109, line: 7, column: 5)
+char (value: "=", text: "=", pos: 114, line: 7, column: 10)
+number (value: 7, text: "7", pos: 116, line: 7, column: 12)
+char (value: "}", text: "}", pos: 118, line: 8, column: 1)
+EOF (value: "", text: "", pos: 120, line: 9, column: 1)
 ```
 
 If you want to combine multiple single-char plaintext tokens into
@@ -435,8 +435,8 @@ taking over its `m` (multiline), `s` (dotAll), `i` (ignoreCase), and `u`
 Implementation Notice
 ---------------------
 
-Although Tokenizr is written in ECMAScript 6, it is transpiled to
-ECMAScript 5 and this way runs in really all(!) current (as of 2015)
+Although Tokenizr is written in TypeScript, it is transpiled to
+ECMAScript 2022 and this way runs in really all(!) current (as of 2025)
 JavaScript environments, of course.
 
 Internally, Tokenizr scans the input string in a read-only fashion
