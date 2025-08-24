@@ -322,6 +322,7 @@ export default class Tokenizr {
     /*  output a debug message  */
     _log (msg: string) {
         /* eslint no-console: off */
+        /* eslint-disable no-console */
         if (this._debug)
             console.log(`tokenizr: ${msg}`)
     }
