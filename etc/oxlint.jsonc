@@ -45,7 +45,6 @@
         "no-control-regex":                "off",
         "no-default-export":               "off",
         "no-dynamic-delete":               "off",
-        "no-dynamic-delete":               "off",
         "no-empty-function":               "off",
         "no-empty-object-type":            "off",
         "no-explicit-any":                 "off",

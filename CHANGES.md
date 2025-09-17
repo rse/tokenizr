@@ -7,6 +7,7 @@ CHANGES
 
 - UPGRADE: upgrade NPM dependencies
 - CLEANUP: switch from any to unknown for the unknown values
+- CLEANUP: remove duplicate entries from OxLint config
 
 2.0.2 (2023-09-10)
 ------------------
