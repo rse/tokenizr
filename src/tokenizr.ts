@@ -42,14 +42,14 @@ const excerpt = (txt: string, o: number): ExcerptResult => {
 /*  helper class for token representation  */
 class Token {
     public type:   string
-    public value:  any
+    public value:  unknown
     public text:   string
     public pos:    number
     public line:   number
     public column: number
 
     /*  construct and initialize object  */
-    constructor (type: string, value: any, text: string, pos = 0, line = 0, column = 0) {
+    constructor (type: string, value: unknown, text: string, pos = 0, line = 0, column = 0) {
         this.type   = type
         this.value  = value
         this.text   = text
@@ -69,7 +69,7 @@ class Token {
     }
 
     /*  check whether value is a Token  */
-    isA (type: string, value?: any) {
+    isA (type: string, value?: unknown) {
         if (type !== this.type)
             return false
         if (value !== undefined && value !== this.value)
@@ -119,7 +119,7 @@ export interface TokenInfo {
 }
 class ActionContext {
     private _tokenizr: Tokenizr
-    private _data:     { [ key: string ]: any }
+    private _data:     { [ key: string ]: unknown }
     public  _repeat:   boolean
     public  _reject:   boolean
     public  _ignore:   boolean
@@ -136,7 +136,7 @@ class ActionContext {
     }
 
     /*  store and retrieve user data attached to context  */
-    data (key: string, value?: any) {
+    data (key: string, value?: unknown) {
         const valueOld = this._data[key]
         if (arguments.length === 2)
             this._data[key] = value
@@ -204,7 +204,7 @@ class ActionContext {
     }
 
     /*  accept current matching as a new token  */
-    accept (type: string, value?: any) {
+    accept (type: string, value?: unknown) {
         value = value ?? this._match?.[0]
         this._tokenizr._log(`    ACCEPT: type: ${type}, value: ` +
             `${JSON.stringify(value)} (${typeof value}), text: "${this._match?.[0] ?? ""}"`)
@@ -591,8 +591,7 @@ export default class Tokenizr {
                 /*  match pattern at the last position  */
                 this._rules[i].pattern.lastIndex = this._pos
                 const found = this._rules[i].pattern.exec(this._input)
-                if (   found !== null
-                    && found.index === this._pos                                  ) {
+                if (found !== null && found.index === this._pos) {
                     if (this._debug)
                         this._log("    MATCHED: " + JSON.stringify(found))
 
@@ -706,7 +705,7 @@ export default class Tokenizr {
     }
 
     /*  consume the current token (by expecting it to be a particular symbol)  */
-    consume (type: string, value?: any) {
+    consume (type: string, value?: unknown) {
         for (let i = 0; i < this._pending.length + 1; i++)
             this._tokenize()
         if (this._pending.length === 0)
@@ -773,8 +772,8 @@ export default class Tokenizr {
     }
 
     /*  execute multiple alternative callbacks  */
-    alternatives (...alternatives: ((this: Tokenizr) => any)[]) {
-        let result: any = null
+    alternatives (...alternatives: ((this: Tokenizr) => unknown)[]) {
+        let result: unknown = null
         let depths: { ex: Error, depth: number }[] = []
         for (let i = 0; i < alternatives.length; i++) {
             try {
