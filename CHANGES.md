@@ -2,6 +2,16 @@
 CHANGES
 =======
 
+2.0.3 (2023-09-17)
+------------------
+
+- UPGRADE: upgrade NPM dependencies
+
+2.0.2 (2023-09-10)
+------------------
+
+- UPGRADE: upgrade NPM dependencies
+
 2.0.1 (2023-08-25)
 ------------------
 
