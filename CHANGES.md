@@ -6,6 +6,7 @@ CHANGES
 ------------------
 
 - UPGRADE: upgrade NPM dependencies
+- CLEANUP: switch from any to unknown for the unknown values
 
 2.0.2 (2023-09-10)
 ------------------
