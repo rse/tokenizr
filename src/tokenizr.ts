@@ -248,7 +248,7 @@ export type FinishAction = (
     this:        ActionContext,
     ctx:         ActionContext
 ) => void
-export default class Tokenizr {
+export class Tokenizr {
     private _before:      BeforeAfterAction | null
     private _after:       BeforeAfterAction | null
     private _finish:      FinishAction | null

@@ -7,7 +7,7 @@
 import { describe, it } from "mocha"
 import { expect }       from "chai"
 
-import Tokenizr from ".."
+import { Tokenizr } from ".."
 
 describe("Tokenizr Library", () => {
     it("should expose its official API", () => {

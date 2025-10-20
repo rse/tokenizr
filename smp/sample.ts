@@ -1,7 +1,7 @@
 
-import path     from "path"
-import fs       from "fs"
-import Tokenizr from ".."
+import path         from "path"
+import fs           from "fs"
+import { Tokenizr } from ".."
 
 const lexer = new Tokenizr()
 
