@@ -774,7 +774,7 @@ export default class Tokenizr {
     /*  execute multiple alternative callbacks  */
     alternatives (...alternatives: ((this: Tokenizr) => unknown)[]) {
         let result: unknown = null
-        let depths: { ex: Error, depth: number }[] = []
+        const depths: { ex: Error, depth: number }[] = []
         for (let i = 0; i < alternatives.length; i++) {
             try {
                 this.begin()
@@ -796,7 +796,7 @@ export default class Tokenizr {
             }
         }
         if (result === null && depths.length > 0) {
-            depths = depths.sort((a, b) => a.depth - b.depth)
+            depths.sort((a, b) => a.depth - b.depth)
             throw depths[0].ex
         }
         return result
