@@ -100,8 +100,8 @@ foo {
 Then we can write a lexical scanner in TypeScript/JavaScript (under Node.js) for the tokens like this:
 
 ```js
-import fs       from "fs"
-import Tokenizr from "tokenizr"
+import fs           from "fs"
+import { Tokenizr } from "tokenizr"
 
 let lexer = new Tokenizr()
 
