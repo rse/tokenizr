@@ -40,7 +40,7 @@ const excerpt = (txt: string, o: number): ExcerptResult => {
 }
 
 /*  helper class for token representation  */
-class Token {
+export class Token {
     public type:   string
     public value:  unknown
     public text:   string
@@ -79,7 +79,7 @@ class Token {
 }
 
 /*  helper class for tokenization error reporting  */
-class ParsingError extends Error {
+export class ParsingError extends Error {
     public name:    string
     public message: string
     public pos:     number
@@ -117,7 +117,7 @@ export interface TokenInfo {
     pos:         number
     len:         number
 }
-class ActionContext {
+export class ActionContext {
     private _tokenizr: Tokenizr
     private _data:     { [ key: string ]: unknown }
     public  _repeat:   boolean
