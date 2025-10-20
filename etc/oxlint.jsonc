@@ -74,7 +74,11 @@
         "prefer-template":                 "off",
         "sort-imports":                    "off",
         "sort-keys":                       "off",
-        "unicorn/prefer-spread":           "off"
+        "unicorn/prefer-spread":           "off",
+        "prefer-at":                       "off",
+        "no-named-export":                 "off",
+        "no-param-reassign":               "off",
+        "prefer-class-fields":             "off"
     }
 }
 
