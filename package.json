@@ -5,7 +5,7 @@
     "homepage":                          "https://github.com/rse/tokenizr",
     "repository":                        { "url": "git+https://github.com/rse/tokenizr.git", "type": "git" },
     "bugs":                              { "url": "http://github.com/rse/tokenizr/issues" },
-    "version":                           "2.1.0",
+    "version":                           "2.1.1",
     "license":                           "MIT",
     "author": {
         "name":                          "Dr. Ralf S. Engelschall",
