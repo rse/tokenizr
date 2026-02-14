@@ -71,4 +71,21 @@ describe("Tokenizr Library", () => {
         expect(tokens[3]).to.be.a("object").and.to.be.deep
             .equal({ type: "symbol", value: "quux", text: "quux", pos: 20, line: 3, column: 2 })
     })
+    it("should allow a state specified twice, with different tags", () => {
+        const tokenizr = new Tokenizr()
+        tokenizr.rule(/a/, ctx => ctx.tag('A').accept('a'))
+        tokenizr.rule(/b/, ctx => ctx.tag('B').accept('b'))
+        tokenizr.rule('default #A, default #B', /./, ctx => {
+            let tags = ''
+            if (ctx.tagged('A')) tags += 'A'
+            if (ctx.tagged('B')) tags += 'B'
+            ctx.accept(tags + 'char')
+        })
+        const tokens = tokenizr.debug(true).input('bd').tokens()
+        expect(tokens).to.be.a("array")
+        expect(tokens).to.have.length(3)
+        expect(tokens[0].type).to.be.a("string").and.to.equal('b')
+        expect(tokens[1].type).to.be.a("string").and.to.equal('Bchar')
+        expect(tokens[1].value).to.be.a("string").and.to.equal('d')
+    })
 })

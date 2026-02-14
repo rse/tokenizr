@@ -577,13 +577,15 @@ export class Tokenizr {
 
                 /*  one of rule's states (and all of its tags) has to match  */
                 let matches = false
-                const states = this._rules[i].state.map((item: RuleState) => item.state)
-                let idx = states.indexOf("*")
-                if (idx < 0)
-                    idx = states.indexOf(this._state[this._state.length - 1])
-                if (idx >= 0) {
-                    const requiredTags = this._rules[i].state[idx].tags
-                    matches = requiredTags.every((tag: string) => this._tag[tag])
+                const current = this._state[this._state.length - 1]
+                const matchingStates = this._rules[i].state.filter(
+                    (item: RuleState) => item.state === '*'
+                        || item.state === current)
+                for (const state of matchingStates) {
+                    if (state.tags.every((tag: string) => this._tag[tag])) {
+                        matches = true
+                        break
+                    }
                 }
                 if (!matches)
                     continue
