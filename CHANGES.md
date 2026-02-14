@@ -1,6 +1,10 @@
 
 CHANGES
 =======
+Unpublished
+-----------
+
+- FIX: Handle more than one state specifier with the same state
 
 2.0.3 (2023-09-17)
 ------------------
