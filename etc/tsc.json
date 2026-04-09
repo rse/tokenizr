@@ -10,7 +10,6 @@
         "strictFunctionTypes":     true,
         "resolveJsonModule":       false,
         "isolatedModules":         false,
-        "esModuleInterop":         false,
         "lib":                     [ "es2022", "dom" ],
         "skipLibCheck":            false,
         "declaration":             true,
