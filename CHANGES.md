@@ -6,6 +6,7 @@ CHANGES
 ------------------
 
 - UPGRADE: upgrade NPM dependencies
+- CLEANUP: cleanup source code
 
 2.1.0 (2025-10-20)
 ------------------
