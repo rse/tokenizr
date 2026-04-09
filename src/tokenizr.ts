@@ -165,7 +165,7 @@ export class ActionContext {
     state (state: string): this
     state (state?: string): this | string {
         if (state !== undefined) {
-            this._tokenizr.state(state!)
+            this._tokenizr.state(state)
             return this
         }
         return this._tokenizr.state()
@@ -466,7 +466,7 @@ export class Tokenizr {
         /*  sanity check arguments  */
         if (typeof state !== "string")
             throw new Error("parameter \"state\" not a String")
-        if (!(typeof pattern === "object" && pattern instanceof RegExp))
+        if (!(pattern instanceof RegExp))
             throw new Error("parameter \"pattern\" not a RegExp")
         if (typeof action !== "function")
             throw new Error("parameter \"action\" not a Function")
