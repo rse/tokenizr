@@ -713,7 +713,7 @@ export class Tokenizr {
         }
         if (arguments.length === 2 && !token.isA(type, value))
             raiseError()
-        else if (!token.isA(type))
+        else if (arguments.length === 1 && !token.isA(type))
             raiseError()
         return token
     }

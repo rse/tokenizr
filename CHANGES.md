@@ -6,6 +6,7 @@ CHANGES
 ------------------
 
 - CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
+- BUGFIX: ensure that "type" parameter exists when checking in consume()
 
 2.1.2 (2026-04-10)
 ------------------
