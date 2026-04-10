@@ -513,7 +513,7 @@ export class Tokenizr {
                 this._column = 1
             }
             else if (c === "\t")
-                this._column += 8 - (this._column % 8)
+                this._column += 8 - ((this._column - 1) % 8)
             else
                 this._column++
         }
