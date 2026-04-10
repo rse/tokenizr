@@ -226,14 +226,14 @@ This is the main API class for establishing a lexical scanner.
 - Method: `Tokenizr#untag(tag: String): Tokenizr`<br/>
   Unset a particular tag. The tag no longer will be matched by rules.
 
-- Method: `Tokenizr#before(action: (ctx: ActionContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
+- Method: `Tokenizr#before(action: (ctx: ActionContext, match: Array[String], rule: { state: Array[{ state: String, tags: Array[String] }], pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
   Configure a single action which is called directly before any rule
   action (configured with `Tokenizr#rule()`) is called. This can be used
   to execute a common action just before all rule actions. The `rule`
   argument is the `Tokenizr#rule()` information of the particular rule
   which is executed.
 
-- Method: `Tokenizr#after(action: (ctx: ActionContext, match: Array[String], rule: { state: String, pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
+- Method: `Tokenizr#after(action: (ctx: ActionContext, match: Array[String], rule: { state: Array[{ state: String, tags: Array[String] }], pattern: RegExp, action: Function, name: String }) => Void): Tokenizr`<br/>
   Configure a single action which is called directly after any rule
   action (configured with `Tokenizr#rule()`) is called. This can be used
   to execute a common action just after all rule actions. The `rule`
@@ -245,7 +245,7 @@ This is the main API class for establishing a lexical scanner.
   token is emitted. This can be used to execute a common action just
   after the last rule action was called.
 
-- Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: ActionContext, match: Array[String]) => Void, name: String): Tokenizr`<br/>
+- Method: `Tokenizr#rule(state?: String, pattern: RegExp, action: (ctx: ActionContext, match: Array[String]) => Void, name?: String): Tokenizr`<br/>
   Configure a token matching rule named `name`, which executes its `action` in case
   the current tokenization state is one of the states (and all of the
   currently set tags) in `state` (by default the rule matches all states
@@ -348,7 +348,7 @@ This is the class of all returned tokens.
   usually for debugging or tracing purposes only.
   The optional `colorize` callback can be used to colorize the output.
 
-- Method: `Tokenizr.Token#isA(type: String, value?: any): String`<br/>
+- Method: `Tokenizr.Token#isA(type: String, value?: any): Boolean`<br/>
   Checks whether token matches against a particular `type` and optionally
   a particular `value`. This is especially used internally by
   `Tokenizr#consume()`.
@@ -391,7 +391,7 @@ This is the class of all rule action contexts.
 - Method: `Tokenizr.ActionContext#info(): { line: number, column: number, pos: number, len: number }`<br/>
   Retrieve information about the current matching.
 
-- Method: `Tokenizr.ActionContext#push(state: String): Tokenizr`<br/>
+- Method: `Tokenizr.ActionContext#push(state: String): Tokenizr.ActionContext`<br/>
   Method: `Tokenizr.ActionContext#pop(): String`<br/>
   Method: `Tokenizr.ActionContext#state(state: String): Tokenizr.ActionContext`<br/>
   Method: `Tokenizr.ActionContext#state(): String`<br/>
@@ -426,8 +426,8 @@ This is the class of all rule action contexts.
 RegExp Flag Support
 -------------------
 
-The `pattern` passed to `Tokenizr.{before,after,rule}()` has to be a
-regular JavaScript `RegExp` objects. Internally, Tokenizr creates a copy
+The `pattern` passed to `Tokenizr#rule()` has to be a
+regular JavaScript `RegExp` object. Internally, Tokenizr creates a copy
 of this object by skipping its `g` (global) and `y` (sticky) flags and
 taking over its `m` (multiline), `s` (dotAll), `i` (ignoreCase), and `u`
 (unicode) flags.
