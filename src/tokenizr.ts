@@ -413,7 +413,7 @@ export class Tokenizr {
         if (typeof tag !== "string")
             throw new Error("parameter \"tag\" not a String")
 
-        /*  set tag  */
+        /*  check tag  */
         return (this._tag[tag] === true)
     }
 
