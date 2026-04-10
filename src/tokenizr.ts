@@ -484,7 +484,7 @@ export class Tokenizr {
             return { state: states[0], tags }
         })
 
-        /*  post-process pattern  */
+        /*  post-process pattern flags  */
         let flags = "y"
         if (pattern.multiline)  flags += "m"
         if (pattern.dotAll)     flags += "s"
