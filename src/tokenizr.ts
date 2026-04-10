@@ -474,11 +474,11 @@ export class Tokenizr {
             throw new Error("parameter \"name\" not a String")
 
         /*  post-process state  */
-        const parsedState = state.split(/\s*,\s*/g).map((entry: string) => {
+        const parsedState = state.split(/\s*,\s*/g).map((entry) => {
             const items  = entry.split(/\s+/g)
-            const states = items.filter((item: string) => !item.startsWith("#"))
-            const tags   = items.filter((item: string) => item.startsWith("#"))
-                .map((tag: string) => tag.slice(1))
+            const states = items.filter((item) => !item.startsWith("#"))
+            const tags   = items.filter((item) => item.startsWith("#"))
+                .map((tag) => tag.slice(1))
             if (states.length !== 1)
                 throw new Error("exactly one state required")
             return { state: states[0], tags }
@@ -685,7 +685,7 @@ export class Tokenizr {
 
     /*  skip one or more tokens  */
     skip (len?: number) {
-        if (arguments.length === 0)
+        if (len === undefined)
             len = 1
         for (let i = 0; i < len; i++)
             if (this.token() === null)
