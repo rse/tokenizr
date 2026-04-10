@@ -102,9 +102,11 @@ export class ParsingError extends Error {
     toString () {
         const l = excerpt(this.input, this.pos)
         const prefix1 = `line ${this.line} (column ${this.column}): `
-        const prefix2 = " ".repeat(prefix1.length + l.prologText.length)
+        const indicator1 = l.prologTrunc ? "..." : "\""
+        const indicator2 = l.epilogTrunc ? "..." : "\""
+        const prefix2 = " ".repeat(prefix1.length + indicator1.length + l.prologText.length)
         const msg = "Parsing Error: " + this.message + "\n" +
-            prefix1 + l.prologText + l.tokenText + l.epilogText + "\n" +
+            prefix1 + indicator1 + l.prologText + l.tokenText + l.epilogText + indicator2 + "\n" +
             prefix2 + "^"
         return msg
     }

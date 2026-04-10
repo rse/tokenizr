@@ -15,6 +15,7 @@ CHANGES
 - BUGFIX: honor stop() situation also in tokenization loop
 - BUGFIX: correctly rollback transactions
 - BUGFIX: ensure that peek() does not loop infinitely if internal tokenization fails to produce tokens
+- CLEANUP: correctly display truncated messages in ParseError.toString()
 - CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
 - CLEANUP: simplify strip() method
 - CLEANUP: use Math.min/Math.max for calculations of min/max values
