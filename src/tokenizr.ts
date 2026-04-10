@@ -664,7 +664,7 @@ export class Tokenizr {
         return result
     }
 
-    /*  peek at the next token or token at particular offset  */
+    /*  peek at the next token or token at a particular offset  */
     peek (offset?: number) {
         if (offset === undefined)
             offset = 0
