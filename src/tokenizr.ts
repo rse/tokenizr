@@ -493,7 +493,7 @@ export class Tokenizr {
         const processedPattern = new RegExp(pattern.source, flags)
 
         /*  store rule  */
-        this._log(`rule: configure rule (state: ${state}, pattern: ${processedPattern.source})`)
+        this._log(`RULE: configure rule (state: ${state}, pattern: ${processedPattern.source})`)
         this._rules.push({ state: parsedState, pattern: processedPattern, action, name })
 
         return this
