@@ -666,7 +666,7 @@ export class Tokenizr {
 
     /*  peek at the next token or token at a particular offset  */
     peek (offset?: number) {
-        if (offset === undefined)
+        if (arguments.length === 0)
             offset = 0
         if (typeof offset !== "number" || offset < 0)
             throw new Error("parameter \"offset\" not a positive Number")
@@ -685,7 +685,7 @@ export class Tokenizr {
 
     /*  skip one or more tokens  */
     skip (len?: number) {
-        if (len === undefined)
+        if (arguments.length === 0)
             len = 1
         for (let i = 0; i < len; i++)
             if (this.token() === null)
