@@ -11,6 +11,7 @@ CHANGES
 - BUGFIX: when all alternatives fail, throw the exception of the alternative which went furthest (deepest)
 - BUGFIX: be more robust and check alsofor end-of-file situation in peek()
 - BUGFIX: fix tab stops in column calculations
+- BUGFIX: fix macOS \r character handling in line counting
 - CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
 - CLEANUP: simplify strip() method
 - CLEANUP: use Math.min/Math.max for calculations of min/max values

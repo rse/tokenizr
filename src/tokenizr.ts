@@ -506,8 +506,12 @@ export class Tokenizr {
         const s = this._input
         for (let i = from; i < until; i++) {
             const c = s.charAt(i)
-            if (c === "\r")
+            if (c === "\r") {
+                this._line++
                 this._column = 1
+                if (i + 1 < until && s.charAt(i + 1) === "\n")
+                    i++
+            }
             else if (c === "\n") {
                 this._line++
                 this._column = 1
