@@ -790,7 +790,7 @@ export class Tokenizr {
             }
         }
         if (!found && depths.length > 0) {
-            depths.sort((a, b) => a.depth - b.depth)
+            depths.sort((a, b) => b.depth - a.depth)
             throw depths[0].ex
         }
         return result
