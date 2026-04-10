@@ -14,7 +14,7 @@ About
 -----
 
 Tokenizr is a small TypeScript/JavaScript library, providing powerful
-and flexible string tokenization functionality. It is intended to be be
+and flexible string tokenization functionality. It is intended to be
 used as the underlying "lexical scanner" in a Recursive Descent based
 "syntax parser", but can be used for other parsing purposes, too. Its
 distinct features are:
@@ -35,7 +35,7 @@ distinct features are:
 
 - **Match Rejecting**:<br/>
   Rule actions can reject their matching at the current input position
-  and let subsequent rules to still match.
+  and let subsequent rules still match.
 
 - **Match Ignoring**:<br/>
   Rule actions can force the matched input to be ignored (without
@@ -214,7 +214,7 @@ This is the main API class for establishing a lexical scanner.
 - Method: `Tokenizr#state(state: String): Tokenizr`<br/>
   Method: `Tokenizr#state(): String`<br/>
   Set or get the state on the top of the state stack. Use this to
-  initialy start tokenizing with a custom state. The initial state is
+  initially start tokenizing with a custom state. The initial state is
   named `default`.
 
 - Method: `Tokenizr#tag(tag: String): Tokenizr`<br/>
@@ -310,7 +310,7 @@ This is the main API class for establishing a lexical scanner.
   transaction. The first one which succeeds (does not throw an exception
   and returns a value) leads to the successful result. In case all
   alternatives failed (all throw an exception), the exception of the
-  most-specific alterative (the one with the largest transaction depth)
+  most-specific alternative (the one with the largest transaction depth)
   is re-thrown. The `this` in each callback function points to the
   `Tokenizr` object on which `alternatives` was called.
 
@@ -358,7 +358,7 @@ This is the class of all returned tokens.
 This is the class of all thrown exceptions related to parsing.
 
 - Property: `Tokenizr.ParsingError#name: String`<br/>
-  Always just the string `ParsingError` to be complaint to
+  Always just the string `ParsingError` to be compliant with
   the JavaScript `Error` class specification.
 
 - Property: `Tokenizr.ParsingError#message: String`<br/>
@@ -450,18 +450,18 @@ The following alternatives are known:
 
 - [moo](https://github.com/no-context/moo):
   A very powerful tokenizer/lexer. It provides nearly the same
-  functionality than Tokenizr. In addition, it compiles all regular
+  functionality as Tokenizr. In addition, it compiles all regular
   expressions into a single one and hence is one of the fastest
   tokenizers/lexers.
 
 - [flex-js](https://github.com/sormy/flex-js)
   A medium powerful tokenizer/lexer. It provides nearly the same
-  functionality than Tokenizr.
+  functionality as Tokenizr.
 
 - [lex](https://github.com/aaditmshah/lexer):
   A tokenizer/lexer, modeled after the popular C solution Flex. This
   small library is similar in spirit, but not as flexible as it does not
-  provide state supports.
+  provide state support.
 
 License
 -------
