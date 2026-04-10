@@ -548,7 +548,7 @@ export class Tokenizr {
             /*  some optional debugging context  */
             if (this._debug) {
                 const e = excerpt(this._input, this._pos)
-                const tags = Object.keys(this._tag).map((tag: string) => `#${tag}`).join(" ")
+                const tags = Object.keys(this._tag).map((tag) => `#${tag}`).join(" ")
                 this._log(`INPUT: state: <${this._state[this._state.length - 1]}>, tags: <${tags}>, text: ` +
                     (e.prologTrunc ? "..." : "\"") + `${e.prologText}<${e.tokenText}>${e.epilogText}` +
                     (e.epilogTrunc ? "..." : "\"") + `, at: <line ${this._line}, column ${this._column}>`)
@@ -557,10 +557,10 @@ export class Tokenizr {
             /*  iterate over all rules...  */
             for (let i = 0; i < this._rules.length; i++) {
                 if (this._debug) {
-                    const state = this._rules[i].state.map((item: RuleState) => {
+                    const state = this._rules[i].state.map((item) => {
                         let output = item.state
                         if (item.tags.length > 0)
-                            output += " " + item.tags.map((tag: string) => `#${tag}`).join(" ")
+                            output += " " + item.tags.map((tag) => `#${tag}`).join(" ")
                         return output
                     }).join(", ")
                     this._log(`  RULE: state(s): <${state}>, ` +
@@ -569,13 +569,13 @@ export class Tokenizr {
 
                 /*  one of the rule's states (and all of its tags) has to match  */
                 let matches = false
-                const states = this._rules[i].state.map((item: RuleState) => item.state)
+                const states = this._rules[i].state.map((item) => item.state)
                 let idx = states.indexOf("*")
                 if (idx < 0)
                     idx = states.indexOf(this._state[this._state.length - 1])
                 if (idx >= 0) {
                     const requiredTags = this._rules[i].state[idx].tags
-                    matches = requiredTags.every((tag: string) => this._tag[tag])
+                    matches = requiredTags.every((tag) => this._tag[tag])
                 }
                 if (!matches)
                     continue
