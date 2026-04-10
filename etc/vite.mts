@@ -4,7 +4,6 @@
 **  Licensed under MIT license <https://spdx.org/licenses/MIT>
 */
 
-import fs                    from "node:fs"
 import * as Vite             from "vite"
 import { tscPlugin }         from "@wroud/vite-plugin-tsc"
 import { viteSingleFile }    from "vite-plugin-singlefile"
