@@ -774,14 +774,18 @@ export class Tokenizr {
         let found = false
         const depths: { ex: Error, depth: number }[] = []
         for (let i = 0; i < alternatives.length; i++) {
+            let txLevel = 0
             try {
                 this.begin()
+                txLevel = this._transaction.length
                 result = alternatives[i].call(this)
                 this.commit()
                 found = true
                 break
             }
             catch (ex) {
+                while (this._transaction.length > txLevel)
+                    this.rollback()
                 if (ex instanceof Error) {
                     this._log(`EXCEPTION: ${ex.message}`)
                     depths.push({ ex, depth: this.depth() })
