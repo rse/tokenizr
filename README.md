@@ -439,10 +439,9 @@ Although Tokenizr is written in TypeScript, it is transpiled to
 ECMAScript 2022 and this way runs in really all(!) current (as of 2025)
 JavaScript environments, of course.
 
-Internally, Tokenizr scans the input string in a read-only fashion
-by leveraging `RegExp`'s `g` flag (global, for ECMAScript <= 5
-environments) or `y` flag (sticky, for ECMAScript >= 2015 environments)
-in combination with `RegExp`'s `lastIndex` field.
+Internally, Tokenizr scans the input string in a read-only fashion by
+leveraging `RegExp`'s `y` flag (sticky) in combination with `RegExp`'s
+`lastIndex` field.
 
 Alternatives
 ------------

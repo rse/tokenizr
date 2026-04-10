@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+2.2.0 (2026-04-10)
+------------------
+
+- CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
+
 2.1.2 (2026-04-10)
 ------------------
 
