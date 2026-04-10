@@ -12,6 +12,7 @@ CHANGES
 - BUGFIX: be more robust and check alsofor end-of-file situation in peek()
 - CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
 - CLEANUP: simplify strip() method
+- CLEANUP: use Math.min/Math.max for calculations of min/max values
 
 2.1.2 (2026-04-10)
 ------------------

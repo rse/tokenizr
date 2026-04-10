@@ -16,8 +16,8 @@ const hex = (ch: string) =>
     ch.charCodeAt(0).toString(16).toUpperCase()
 const excerpt = (txt: string, o: number): ExcerptResult => {
     const l = txt.length
-    let b = o - 20; if (b < 0) b = 0
-    let e = o + 20; if (e > l) e = l
+    const b = Math.max(o - 20, 0)
+    const e = Math.min(o + 20, l)
     const extract = (txt: string, pos: number, len: number) =>
         txt.substring(pos, pos + len)
             .replaceAll(/\\/g,   "\\\\")
