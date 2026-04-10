@@ -601,7 +601,12 @@ export class Tokenizr {
                     this._rules[i].action.call(this._ctx, this._ctx, found)
                     if (this._after !== null)
                         this._after.call(this._ctx, this._ctx, found, this._rules[i])
-                    if (this._ctx._reject)
+                    if (this._stopped) {
+                        /*  stop tokenization immediately  */
+                        finish()
+                        return
+                    }
+                    else if (this._ctx._reject)
                         /*  reject current action, continue matching  */
                         continue
                     else if (this._ctx._repeat) {
