@@ -575,9 +575,9 @@ export class Tokenizr {
 
                 /*  one of the rule's states (and all of its tags) has to match  */
                 let matches = false
-                let idx = this._rules[i].state.findIndex((item) => item.state === "*")
+                let idx = this._rules[i].state.findIndex((item) => item.state === this._state[this._state.length - 1])
                 if (idx < 0)
-                    idx = this._rules[i].state.findIndex((item) => item.state === this._state[this._state.length - 1])
+                    idx = this._rules[i].state.findIndex((item) => item.state === "*")
                 if (idx >= 0) {
                     const requiredTags = this._rules[i].state[idx].tags
                     matches = requiredTags.every((tag) => this._tag[tag])
