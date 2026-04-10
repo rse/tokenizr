@@ -14,6 +14,7 @@ CHANGES
 - CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
 - CLEANUP: simplify strip() method
 - CLEANUP: use Math.min/Math.max for calculations of min/max values
+- CLEANUP: fix spellings in README
 - UPGRADE: upgrade NPM dependencies
 
 2.1.2 (2026-04-10)
