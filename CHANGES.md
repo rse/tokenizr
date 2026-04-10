@@ -6,6 +6,7 @@ CHANGES
 ------------------
 
 - IMPROVEMENT: make alternatives() more robust by using an explicit flag internally
+- IMPROVEMENT: improve performance of rule() by using more modern string manipulations
 - BUGFIX: ensure that "type" parameter exists when checking in consume()
 - BUGFIX: when all alternatives fail, throw the exception of the alternative which went furthest (deepest)
 - BUGFIX: be more robust and check alsofor end-of-file situation in peek()

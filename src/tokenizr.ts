@@ -476,9 +476,9 @@ export class Tokenizr {
         /*  post-process state  */
         const parsedState = state.split(/\s*,\s*/g).map((entry: string) => {
             const items  = entry.split(/\s+/g)
-            const states = items.filter((item: string) => item.match(/^#/) === null)
-            const tags   = items.filter((item: string) => item.match(/^#/) !== null)
-                .map((tag: string) => tag.replace(/^#/, ""))
+            const states = items.filter((item: string) => !item.startsWith("#"))
+            const tags   = items.filter((item: string) => item.startsWith("#"))
+                .map((tag: string) => tag.slice(1))
             if (states.length !== 1)
                 throw new Error("exactly one state required")
             return { state: states[0], tags }
