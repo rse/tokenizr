@@ -688,11 +688,8 @@ export class Tokenizr {
         if (len === undefined)
             len = 1
         for (let i = 0; i < len; i++)
-            this._tokenize()
-        if (len > this._pending.length)
-            throw new Error("not enough tokens available for skip operation")
-        while (len-- > 0)
-            this.token()
+            if (this.token() === null)
+                throw new Error("not enough tokens available for skip operation")
         return this
     }
 

@@ -5,11 +5,12 @@ CHANGES
 2.2.0 (2026-04-10)
 ------------------
 
-- CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
+- IMPROVEMENT: make alternatives() more robust by using an explicit flag internally
 - BUGFIX: ensure that "type" parameter exists when checking in consume()
 - BUGFIX: when all alternatives fail, throw the exception of the alternative which went furthest (deepest)
 - BUGFIX: be more robust and check alsofor end-of-file situation in peek()
-- IMPROVEMENT: make alternatives() more robust by using an explicit flag internally
+- CLEANUP: remove RegExp "y" flag runtime-check as it exists since 2015
+- CLEANUP: simplify strip() method
 
 2.1.2 (2026-04-10)
 ------------------
