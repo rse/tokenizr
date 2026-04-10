@@ -567,7 +567,7 @@ export class Tokenizr {
                         `pattern: ${this._rules[i].pattern.source}`)
                 }
 
-                /*  one of rule's states (and all of its tags) has to match  */
+                /*  one of the rule's states (and all of its tags) has to match  */
                 let matches = false
                 const states = this._rules[i].state.map((item: RuleState) => item.state)
                 let idx = states.indexOf("*")
