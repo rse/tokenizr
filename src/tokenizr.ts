@@ -59,7 +59,7 @@ export class Token {
     }
 
     /*  render a useful string representation  */
-    toString (colorize = (type: string, text: string) => text) {
+    toString (colorize = (_type: string, text: string) => text) {
         return `${colorize("type", this.type)} ` +
             `(value: ${colorize("value", JSON.stringify(this.value))}, ` +
             `text: ${colorize("text", JSON.stringify(this.text))}, ` +
