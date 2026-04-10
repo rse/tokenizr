@@ -698,7 +698,7 @@ export class Tokenizr {
 
     /*  consume the current token (by expecting it to be a particular symbol)  */
     consume (type: string, value?: unknown) {
-        for (let i = 0; i < this._pending.length + 1; i++)
+        if (this._pending.length === 0)
             this._tokenize()
         if (this._pending.length === 0)
             throw new Error("not enough tokens available for consume operation")
@@ -766,12 +766,14 @@ export class Tokenizr {
     /*  execute multiple alternative callbacks  */
     alternatives (...alternatives: ((this: Tokenizr) => unknown)[]) {
         let result: unknown = null
+        let found = false
         const depths: { ex: Error, depth: number }[] = []
         for (let i = 0; i < alternatives.length; i++) {
             try {
                 this.begin()
                 result = alternatives[i].call(this)
                 this.commit()
+                found = true
                 break
             }
             catch (ex) {
@@ -787,7 +789,7 @@ export class Tokenizr {
                 continue
             }
         }
-        if (result === null && depths.length > 0) {
+        if (!found && depths.length > 0) {
             depths.sort((a, b) => a.depth - b.depth)
             throw depths[0].ex
         }
