@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+2.1.2 (2026-04-10)
+------------------
+
+- UPGRADE: upgrade NPM dependencies
+- CLEANUP: cleanup source code
+
 2.1.1 (2025-11-20)
 ------------------
 
