@@ -681,8 +681,9 @@ export class Tokenizr {
 
         /*  if no more tokens are pending, try to determine new ones  */
         while (offset >= this._pending.length) {
+            const len = this._pending.length
             this._tokenize()
-            if (this._eof || this._pending.length === 0)
+            if (this._eof || this._pending.length === len)
                 break
         }
         if (offset >= this._pending.length)
